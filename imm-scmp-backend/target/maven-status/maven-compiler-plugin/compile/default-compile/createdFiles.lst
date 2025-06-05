@@ -1,0 +1,12 @@
+Model\Course\Course.class
+com\example\demo\ProjectCoursePlatformApplicationTests.class
+Repository\User\UserRepository.class
+DTO\LoginRequest.class
+Model\User\Student.class
+Model\User\User.class
+Model\User\Assistant.class
+Service\JwtService.class
+Service\User\UserService.class
+Controller\User\UserController.class
+Model\User\Teacher.class
+Model\User\User$Role.class
