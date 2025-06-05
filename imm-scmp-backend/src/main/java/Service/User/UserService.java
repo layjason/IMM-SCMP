@@ -34,6 +34,10 @@ public class UserService {
             default -> throw new IllegalArgumentException("Invalid role: " + registerRequest.getRole());
         }
 
+        user.setUserName(registerRequest.getUserName());
+        user.setEmail(registerRequest.getEmail());
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+
         return userRepo.save(user);
     }
 
