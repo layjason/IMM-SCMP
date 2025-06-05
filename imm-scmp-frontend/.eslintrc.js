@@ -16,11 +16,11 @@ module.exports = {
   },
   plugins: ['react', 'prettier'],
   rules: {
-    'prettier/prettier': 'error',
+    'prettier/prettier': ['error', { endOfLine: 'lf' }],
+    'react/prop-types': 'off',
+    'react/react-in-jsx-scope': 'off',
   },
   settings: {
-    react: {
-      version: 'detect',
-    },
+    react: { version: 'detect' },
   },
 };
