@@ -1,12 +1,12 @@
 package Service.User;
 
-import Model.User.User;
+import Model.User.*;
 import Repository.User.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.*;
 import DTO.*;
-import Exception.User.UserExceptions.*;
+import Exception.User.UserException.*;
 
 
 import java.util.Optional;
@@ -18,17 +18,22 @@ public class UserService {
     private UserRepository userRepo;
 
     @Autowired
-    private PasswordEncoder passwordEncoder; // e.g. BCryptPasswordEncoder bean
+    private PasswordEncoder passwordEncoder;
 
     public User registerUser(RegisterRequest registerRequest) {
         if (userRepo.findByEmail(registerRequest.getEmail()).isPresent()) {
             throw new EmailAlreadyExistsException();
         }
-        User user = new User();
-        user.setUserName(registerRequest.getUserName());
-        user.setEmail(registerRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        user.setRole(User.Role.STUDENT);  // Or set default role as needed
+
+        User user;
+
+        switch (registerRequest.getRole().toUpperCase()) {
+            case "TEACHER" -> user = new Teacher();
+            case "ASSISTANT" -> user = new Assistant();
+            case "STUDENT" -> user = new Student();
+            default -> throw new IllegalArgumentException("Invalid role: " + registerRequest.getRole());
+        }
+
         return userRepo.save(user);
     }
 
@@ -57,6 +62,22 @@ public class UserService {
         }
 
         return userRepo.save(user);
+    }
+
+    public void changePassword(String userId, ChangePasswordRequest request) {
+        User user = userRepo.findById(userId).orElseThrow(UserNotFoundException::new);
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new InvalidOldPasswordException();
+        }
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepo.save(user);
+    }
+
+    public String getUserRole(String userId) {
+        return userRepo.findById(userId)
+                .orElseThrow(UserNotFoundException::new)
+                .getRole()
+                .name();
     }
 
 }

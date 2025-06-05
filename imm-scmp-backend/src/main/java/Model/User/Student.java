@@ -6,9 +6,12 @@ import lombok.*;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class Student extends User {
-    private String major;
-    private Integer year;
+    private Integer joinYear;
+    private String classId;
+
+    public Student() {
+        super.setRole(Role.STUDENT);
+    }
 }

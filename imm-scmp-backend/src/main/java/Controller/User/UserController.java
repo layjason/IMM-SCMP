@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 
 import Model.User.User;
-import Service.User.UserService;
+import Service.User.*;
+import Service.JwtService;
 import DTO.*;
+import Exception.User.UserException.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -15,11 +17,14 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private JwtService jwtService;
+
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
         try {
             User savedUser = userService.registerUser(registerRequest);
-            // You might want to exclude password from response before returning
             savedUser.setPassword(null);
             return ResponseEntity.ok(savedUser);
         } catch (EmailAlreadyExistsException e) {
@@ -36,6 +41,21 @@ public class UserController {
         String token = jwtService.generateToken(user);
         return ResponseEntity.ok(token);
     }
+
+    @PutMapping("/{userId}/change-password")
+    public ResponseEntity<?> changePassword(
+            @PathVariable String userId,
+            @RequestBody ChangePasswordRequest request) {
+        userService.changePassword(userId, request);
+        return ResponseEntity.ok("Password Changed Successfully");
+    }
+
+    @GetMapping("/{userId}/role")
+    public ResponseEntity<String> getUserRole(@PathVariable String userId) {
+        String role = userService.getUserRole(userId);
+        return ResponseEntity.ok(role);
+    }
+
 
 }
 

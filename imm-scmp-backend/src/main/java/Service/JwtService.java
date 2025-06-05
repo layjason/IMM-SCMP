@@ -1,14 +1,16 @@
+package Service;
+
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+import Model.User.*;
 
 @Service
 public class JwtService {
 
-    // Use a sufficiently long secret key (e.g., 256-bit for HS256)
     private final String secret = "mySuperSecretKeyThatIsLongEnoughToBeSecure12345!";
     private final Key key = Keys.hmacShaKeyFor(secret.getBytes());
 
@@ -17,7 +19,7 @@ public class JwtService {
                 .setSubject(user.getEmail())
                 .claim("role", user.getRole().name())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -39,7 +41,6 @@ public class JwtService {
                     .parseClaimsJws(token);
             return true;
         } catch (JwtException e) {
-            // token is invalid (expired, tampered, unsupported, etc)
             return false;
         }
     }
