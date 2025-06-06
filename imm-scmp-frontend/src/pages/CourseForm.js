@@ -101,7 +101,7 @@ function CourseForm() {
               ) : (
                 <School className="w-8 h-8" />
               )}
-              <h1 className="text-3xl font-bold">
+              <h1 className="text-xl font-bold">
                 {isEdit ? 'Update Course' : 'Create New Course'}
               </h1>
             </div>
