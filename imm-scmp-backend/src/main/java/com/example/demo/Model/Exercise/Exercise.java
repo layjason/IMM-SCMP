@@ -1,6 +1,7 @@
 package com.example.demo.Model.Exercise;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -12,16 +13,14 @@ public class Exercise {
     private String title;
     private String description;
 
-    // 是否允许多次提交
-    private boolean allowMultipleSubmissions;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
-    // 练习开放时间，简单使用String表示示例
-    private String openTime;
+    private boolean allowMultipleSubmissions;
 
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL)
     private List<Question> questions;
 
-    // 省略getter/setter
     public Long getId() {
         return id;
     }
@@ -29,5 +28,55 @@ public class Exercise {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public boolean isAllowMultipleSubmissions() {
+        return allowMultipleSubmissions;
+    }
+
+    public void setAllowMultipleSubmissions(boolean allowMultipleSubmissions) {
+        this.allowMultipleSubmissions = allowMultipleSubmissions;
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
 }
+
+
 
