@@ -1,16 +1,23 @@
 package com.example.demo.Controller.Exercise;
 
 import com.example.demo.Model.Exercise.*;
+import com.example.demo.DTO.ExerciseDTO;
 import com.example.demo.Service.Exercise.ExerciseService;
 import com.example.demo.Service.Exercise.SubmissionService;
+import com.example.demo.Repository.Exercise.ExerciseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/exercises")
 public class ExerciseController {
+
+    @Autowired
+    private ExerciseRepository exerciseRepository;
+
 
     private final ExerciseService exerciseService;
     private final SubmissionService submissionService;
@@ -54,6 +61,16 @@ public class ExerciseController {
     @PostMapping("/grade/{submissionId}")
     public Submission gradeSubmission(@PathVariable Long submissionId, @RequestBody String gradeJson) {
         return submissionService.gradeSubmission(submissionId, gradeJson);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<Exercise> createExercise(@RequestBody ExerciseDTO dto) {
+        Exercise exercise = new Exercise();
+        exercise.setTitle(dto.getTitle());
+        exercise.setStartTime(dto.getStartTime());
+        exercise.setEndTime(dto.getEndTime());
+        exerciseRepository.save(exercise);
+        return ResponseEntity.ok(exercise);
     }
 }
 

@@ -56,6 +56,14 @@ public class Submission {
     public void setGraded(boolean graded) {
         this.graded = graded;
     }
+
+    public Long getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(Long studentId) {
+        this.studentId = studentId;
+    }
 }
 
 
