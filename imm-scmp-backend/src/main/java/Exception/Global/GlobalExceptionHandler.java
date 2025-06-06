@@ -5,7 +5,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalException {
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<String> handleEmailExists(EmailAlreadyExistsException ex) {

@@ -9,8 +9,8 @@ E:\OOP\73216206-wenle-lab08\IMM-SCMP\imm-scmp-backend\src\main\java\DTO\Exercise
 E:\OOP\73216206-wenle-lab08\IMM-SCMP\imm-scmp-backend\src\main\java\DTO\LoginRequest.java
 E:\OOP\73216206-wenle-lab08\IMM-SCMP\imm-scmp-backend\src\main\java\DTO\RegisterRequest.java
 E:\OOP\73216206-wenle-lab08\IMM-SCMP\imm-scmp-backend\src\main\java\DTO\UpdateUserRequest.java
-E:\OOP\73216206-wenle-lab08\IMM-SCMP\imm-scmp-backend\src\main\java\Exception\Global\GlobalException.java
-E:\OOP\73216206-wenle-lab08\IMM-SCMP\imm-scmp-backend\src\main\java\Exception\User\UserException.java
+E:\OOP\73216206-wenle-lab08\IMM-SCMP\imm-scmp-backend\src\main\java\Exception\Global\GlobalExceptionHandler.java
+E:\OOP\73216206-wenle-lab08\IMM-SCMP\imm-scmp-backend\src\main\java\Exception\User\UserExceptions.java
 E:\OOP\73216206-wenle-lab08\IMM-SCMP\imm-scmp-backend\src\main\java\Model\Course\Course.java
 E:\OOP\73216206-wenle-lab08\IMM-SCMP\imm-scmp-backend\src\main\java\Model\Exercise\Exercise.java
 E:\OOP\73216206-wenle-lab08\IMM-SCMP\imm-scmp-backend\src\main\java\Model\Exercise\Question.java
