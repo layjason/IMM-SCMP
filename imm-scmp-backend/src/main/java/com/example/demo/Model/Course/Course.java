@@ -29,8 +29,7 @@ public abstract class Course {
     @Column(length = 1000)
     private String objective;
 
-    @Column(length = 1000)
-    private String assessment;
+    private String assessmentMethod;
 
     @ManyToOne
     @JoinColumn(name = "creator_id")
