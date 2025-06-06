@@ -1,6 +1,7 @@
-package Model.User;
+package com.example.demo.Model.User;
 
 import jakarta.persistence.Entity;
+
 import lombok.*;
 
 @Entity

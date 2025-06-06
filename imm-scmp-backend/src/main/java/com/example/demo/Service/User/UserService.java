@@ -1,13 +1,14 @@
-package Service.User;
+package com.example.demo.Service.User;
 
-import Model.User.*;
-import Repository.User.UserRepository;
+import com.example.demo.Model.User.*;
+import com.example.demo.Repository.User.UserRepository;
+import com.example.demo.DTO.*;
+import com.example.demo.Exception.User.UserException.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.security.crypto.password.*;
-import DTO.*;
-import Exception.User.UserException.*;
-
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -83,6 +84,13 @@ public class UserService {
                 .getRole()
                 .name();
     }
+
+    public String getUserIdByEmail(String email) {
+        return userRepo.findByEmail(email)
+                .orElseThrow(UserNotFoundException::new)
+                .getUserId();
+    }
+
 
 }
 

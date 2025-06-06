@@ -1,11 +1,14 @@
-package Model.Course;
+package com.example.demo.Model.Course;
 
-import Model.User.*;
+import com.example.demo.Model.User.*;
+
 import jakarta.persistence.*;
-import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.*;
+
+import lombok.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -14,14 +17,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public abstract class Course {
+public class Course {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String courseId;
+    private Integer courseId;
 
     private String courseName;
-
-    private String courseCode;
 
     @Column(length = 2000)
     private String syllabus;
@@ -29,12 +29,24 @@ public abstract class Course {
     @Column(length = 1000)
     private String objective;
 
-    private String assessmentMethod;
+    @Enumerated(EnumType.STRING)
+    private AssessmentMethod assessmentMethod;
 
     @ManyToOne
-    @JoinColumn(name = "creator_id")
+    @JoinColumn(name = "creator_id", nullable = false)
     private User creator;
 
     @CreationTimestamp
     private LocalDateTime createdTime;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseChapter> chapters;
+
+    public enum AssessmentMethod {
+        EXAM,
+        PROJECT,
+        ASSIGNMENT,
+        PARTICIPATION,
+        NONE
+    }
 }

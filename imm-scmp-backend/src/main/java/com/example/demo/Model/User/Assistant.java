@@ -1,8 +1,10 @@
-package Model.User;
+package com.example.demo.Model.User;
+
+import com.example.demo.Model.Course.Course;
 
 import jakarta.persistence.*;
+
 import lombok.*;
-import Model.Course.*;
 
 @Entity
 @Getter
