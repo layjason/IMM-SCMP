@@ -22,5 +22,12 @@ public class Exercise {
     private List<Question> questions;
 
     // 省略getter/setter
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
 

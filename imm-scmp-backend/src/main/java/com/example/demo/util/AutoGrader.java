@@ -1,7 +1,7 @@
 package com.example.demo.util;
 
 import com.example.demo.Model.Exercise.Question;
-import com.example.demo.model.enums.QuestionType;
+import com.example.demo.Model.enums.QuestionType;
 
 import java.util.List;
 import java.util.Map;

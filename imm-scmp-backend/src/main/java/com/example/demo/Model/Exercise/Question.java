@@ -1,8 +1,6 @@
 package com.example.demo.Model.Exercise;
 
-package com.example.demo.model;
-
-import com.example.demo.model.enums.QuestionType;
+import com.example.demo.Model.enums.QuestionType;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -28,5 +26,36 @@ public class Question {
     private String correctAnswer; // 标准答案(选择题存正确选项，填空题存参考答案)
 
     // 省略getter/setter
+    public void setExercise(Exercise exercise) {
+        this.exercise = exercise;
+    }
+
+    public Exercise getExercise() {
+        return exercise;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public QuestionType getType() {
+        return type;
+    }
+
+    public void setType(QuestionType type) {
+        this.type = type;
+    }
+
+    public String getCorrectAnswer() {
+        return correctAnswer;
+    }
+
+    public void setCorrectAnswer(String correctAnswer) {
+        this.correctAnswer = correctAnswer;
+    }
 }
 
