@@ -1,0 +1,9 @@
+package com.example.demo.Repository.Exercise;
+
+import com.example.demo.Model.Exercise.Exercise;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ExerciseRepository extends JpaRepository<Exercise, Long> {}
+
+
+
