@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, TextField, Button, Typography, Alert } from '@mui/material';
-import '../styles/Login.css';
+import '../../styles/Login.css';
 
 function Login() {
   const [email, setEmail] = useState('');

@@ -11,7 +11,7 @@ import {
   FormControl,
   InputLabel,
 } from '@mui/material';
-import '../styles/Register.css'; // 使用独立样式文件
+import '../../styles/Register.css'; // 使用独立样式文件
 
 function Register() {
   const [email, setEmail] = useState('');
