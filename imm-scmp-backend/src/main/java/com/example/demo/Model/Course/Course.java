@@ -12,6 +12,7 @@ import lombok.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "courses")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,9 +20,13 @@ import lombok.*;
 
 public class Course {
     @Id
-    private Integer courseId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String courseId;
 
     private String courseName;
+
+    @Column(unique = true, nullable = false)
+    private String courseCode;
 
     @Column(length = 2000)
     private String syllabus;

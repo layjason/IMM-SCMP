@@ -1,4 +1,4 @@
-package com.example.demo.DTO.Course;
+package com.example.demo.DTO;
 
 import com.example.demo.DTO.*;
 import com.example.demo.Model.Course.Course.AssessmentMethod;
@@ -11,8 +11,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CourseDetailResponse {
-    private Integer courseId;
+    private String courseId;
     private String courseName;
+    private String courseCode;
     private String syllabus;
     private String objective;
     private AssessmentMethod assessmentMethod;

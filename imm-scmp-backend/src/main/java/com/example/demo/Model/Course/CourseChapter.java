@@ -21,6 +21,9 @@ public class CourseChapter {
 
     private Integer orderIndex;
 
+    @Column(length = 5000)
+    private String content;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
     private Course course;

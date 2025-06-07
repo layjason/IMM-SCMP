@@ -9,6 +9,7 @@ import java.util.List;
 public class CourseChapterResponse {
     private Long chapterId;
     private String title;
+    private String content;
     private Integer orderIndex;
     private List<CourseResourceResponse> resources;
 }

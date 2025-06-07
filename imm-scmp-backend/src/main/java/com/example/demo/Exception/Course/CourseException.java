@@ -13,6 +13,12 @@ public class CourseException {
             super("No permission to perform this action.");
         }
     }
+
+    public static class CourseAlreadyExistsException extends RuntimeException {
+        public CourseAlreadyExistsException() {
+            super("Course already exists.");
+        }
+    }
 }
 
 
