@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, TextField, Button, Typography, Alert } from '@mui/material';
-import '../../styles/Login.css';
+import { ErrorOutline } from '@mui/icons-material';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -31,66 +30,74 @@ function Login() {
   };
 
   return (
-    <Box className="login-root">
-      <Box className="login-left">
-        <Typography variant="h4" className="login-title">
-          欢迎使用 <br></br>软课程管理平台
-        </Typography>
-        <Typography className="login-subtitle">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex flex-col lg:flex-row">
+      {/* Left Section */}
+      <div className="lg:w-1/2 p-8 flex flex-col justify-center bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+        <h1 className="text-3xl font-bold mb-4">欢迎使用软课程管理平台</h1>
+        <p className="text-lg text-blue-100">
           教师、助教和学生都可以在这里高效管理教学资源。
-        </Typography>
-      </Box>
+        </p>
+      </div>
 
-      <Box className="login-right">
-        <Box className="login-box">
-          <Typography variant="h5" component="h5">
-            登录
-          </Typography>
-
-          <TextField
-            label="邮箱"
-            fullWidth
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            margin="normal"
-          />
-
-          <TextField
-            label="密码"
-            fullWidth
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            margin="normal"
-          />
-
+      {/* Right Section */}
+      <div className="lg:w-1/2 p-8 flex items-center justify-center">
+        <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 p-8 w-full max-w-md">
+          <h2 className="text-2xl font-bold text-slate-700 mb-6">登录</h2>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
+                邮箱
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white"
+                placeholder="请输入邮箱"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
+                密码
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white"
+                placeholder="请输入密码"
+              />
+            </div>
+            <button
+              onClick={handleLogin}
+              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
+            >
+              登录
+            </button>
+            <button
+              onClick={() => navigate('/register')}
+              className="w-full text-blue-600 hover:text-blue-800 font-medium py-2 transition-colors duration-200"
+            >
+              没有账号？去注册
+            </button>
+          </div>
           {error && (
-            <Alert severity="error" sx={{ mt: 2 }}>
-              {error}
-            </Alert>
+            <div className="fixed bottom-6 right-6 z-50">
+              <div className="px-6 py-4 rounded-xl shadow-lg backdrop-blur-sm bg-red-500/90 text-white flex items-center gap-3">
+                <ErrorOutline className="w-5 h-5" />
+                <span className="font-medium">{error}</span>
+                <button
+                  onClick={() => setError('')}
+                  className="ml-2 text-white/80 hover:text-white"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
           )}
-
-          <Button
-            fullWidth
-            variant="contained"
-            style={{ marginTop: 24 }}
-            onClick={handleLogin}
-          >
-            登录
-          </Button>
-          <Button
-            fullWidth
-            variant="text"
-            color="primary"
-            style={{ marginTop: 8 }}
-            onClick={() => navigate('/register')}
-          >
-            没有账号？去注册
-          </Button>
-        </Box>
-      </Box>
-    </Box>
+        </div>
+      </div>
+    </div>
   );
 }
 
