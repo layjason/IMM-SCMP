@@ -38,5 +38,15 @@ public class GlobalException {
     public ResponseEntity<String> handleUnauthorized(CourseException.UnauthorizedException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
+
+    @ExceptionHandler(UserException.PasswordsDoNotMatchException.class)
+    public ResponseEntity<String> handlePasswordsDoNotMatch(UserException.PasswordsDoNotMatchException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(UserException.InvalidPasswordFormatException.class)
+    public ResponseEntity<String> handleInvalidPasswordFormat(UserException.InvalidPasswordFormatException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }
 

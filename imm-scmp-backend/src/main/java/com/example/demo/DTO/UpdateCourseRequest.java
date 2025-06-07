@@ -1,4 +1,4 @@
-package com.example.demo.DTO.Course;
+package com.example.demo.DTO;
 
 import com.example.demo.Model.Course.Course.AssessmentMethod;
 

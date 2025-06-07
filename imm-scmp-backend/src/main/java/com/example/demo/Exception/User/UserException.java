@@ -25,4 +25,16 @@ public class UserException {
             super("Old password is incorrect. Please try again.");
         }
     }
+
+    public static class PasswordsDoNotMatchException extends RuntimeException {
+        public PasswordsDoNotMatchException() {
+            super("Passwords do not match");
+        }
+    }
+
+    public static class InvalidPasswordFormatException extends RuntimeException {
+        public InvalidPasswordFormatException() {
+            super("Password must be at least 8 characters long and include a number and special character");
+        }
+    }
 }

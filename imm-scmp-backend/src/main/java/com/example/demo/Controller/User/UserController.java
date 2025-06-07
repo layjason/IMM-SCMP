@@ -41,11 +41,12 @@ public class UserController {
                     .orElseThrow(UserException.InvalidCredentialsException::new);
 
             String token = jwtService.generateToken(user);
+
             return ResponseEntity.ok(token);
         } catch (UserException.InvalidCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
-        }
+    }
 
     @PutMapping("/{userId}/change-password")
     public ResponseEntity<?> changePassword(
