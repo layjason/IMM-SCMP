@@ -2,15 +2,13 @@ package com.example.demo.Model.Class;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.List;
 
-@Entity
-@Table(name = "classes")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "classes")
 public class ClassEntity {
 
     @Id
@@ -19,6 +17,9 @@ public class ClassEntity {
 
     @Column(name = "class_name", nullable = false)
     private String className;
+
+    @Column(name = "class_code", nullable = false, unique = true)
+    private String classCode;
 
     @ElementCollection
     @CollectionTable(name = "class_course_ids", joinColumns = @JoinColumn(name = "class_id"))
@@ -32,5 +33,4 @@ public class ClassEntity {
 
     @Column(name = "teacher_id", nullable = false)
     private String teacherId;
-
 }
