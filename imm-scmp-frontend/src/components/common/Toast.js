@@ -10,6 +10,7 @@ function Toast({ error, success, clearMessages }) {
           error ? 'bg-red-500/90 text-white' : 'bg-green-500/90 text-white'
         }`}
       >
+        :
         <div className="flex items-center gap-3">
           {error ? (
             <ErrorOutline className="w-5 h-5" />
