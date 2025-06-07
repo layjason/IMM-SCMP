@@ -13,20 +13,20 @@ function Login() {
     try {
       // backend api
 
-      // const response = await fetch('http://localhost:8080/api/users/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email, password }),
-      // });
+      const response = await fetch('http://localhost:8080/api/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-      // if (!response.ok) {
-      //   const errorData = await response.json();
-      //   throw new Error(errorData.message || '登录失败');
-      // }
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || '登录失败');
+      }
 
-      // const data = await response.json();
-      // localStorage.setItem('userId', data.userId);
-      // alert('登录成功');
+      const data = await response.json();
+      localStorage.setItem('userId', data.userId);
+      alert('登录成功');
       navigate('/courses');
     } catch (err) {
       setError(err.message);

@@ -22,33 +22,47 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public User registerUser(RegisterRequest registerRequest) {
+        if (!registerRequest.getPassword().equals(registerRequest.getConfirmPassword())) {
+            throw new PasswordsDoNotMatchException();
+        }
+
+        if (!isValidPassword(registerRequest.getPassword())) {
+            throw new InvalidPasswordFormatException();
+        }
+
         if (userRepo.findByEmail(registerRequest.getEmail()).isPresent()) {
             throw new EmailAlreadyExistsException();
         }
 
-        User user;
-
-        switch (registerRequest.getRole().toUpperCase()) {
-            case "TEACHER" -> user = new Teacher();
-            case "ASSISTANT" -> user = new Assistant();
-            case "STUDENT" -> user = new Student();
+        User user = switch (registerRequest.getRole().toUpperCase()) {
+            case "TEACHER" -> new Teacher();
+            case "ASSISTANT" -> new Assistant();
+            case "STUDENT" -> new Student();
             default -> throw new IllegalArgumentException("Invalid role: " + registerRequest.getRole());
-        }
+        };
 
         user.setUserName(registerRequest.getUserName());
         user.setEmail(registerRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setRole(User.Role.valueOf(registerRequest.getRole().toUpperCase()));
+        user.setUserId(generateCustomUserId(user.getRole()));
 
         return userRepo.save(user);
     }
 
 
+
     public Optional<User> loginUser(LoginRequest loginRequest) {
         Optional<User> userOpt = userRepo.findByEmail(loginRequest.getEmail());
+
+        if (!isValidPassword(loginRequest.getPassword())) {
+            throw new InvalidPasswordFormatException();
+        }
+
         if (userOpt.isPresent() && passwordEncoder.matches(loginRequest.getPassword(), userOpt.get().getPassword())) {
             return userOpt;
         }
-        throw new InvalidCredentialsException(); // login failed
+        throw new InvalidCredentialsException();
     }
 
     public User updateUserInfo(String userId, UpdateUserRequest updateData) {
@@ -91,6 +105,29 @@ public class UserService {
                 .getUserId();
     }
 
+    private String generateCustomUserId(User.Role role) {
+        String prefix = switch (role) {
+            case TEACHER -> "T";
+            case STUDENT -> "S";
+            case ASSISTANT -> "A";
+        };
 
+        Optional<User> lastUserOpt = userRepo.findTopByUserIdStartingWithOrderByUserIdDesc(prefix);
+
+        int next = 1;
+        if (lastUserOpt.isPresent()) {
+            String lastId = lastUserOpt.get().getUserId();
+            try {
+                next = Integer.parseInt(lastId.substring(1)) + 1;
+            } catch (NumberFormatException ignored) {}
+        }
+
+        return String.format("%s%07d", prefix, next);
+    }
+
+    private boolean isValidPassword(String password) {
+        if (password == null) return false;
+        return password.matches("^(?=.*[A-Za-z])(?=.*\\W).{8,}$");
+    }
 }
 

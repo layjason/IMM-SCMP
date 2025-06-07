@@ -16,7 +16,6 @@ import lombok.*;
 @AllArgsConstructor
 public abstract class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id", updatable = false, nullable = false)
     private String userId;
 
