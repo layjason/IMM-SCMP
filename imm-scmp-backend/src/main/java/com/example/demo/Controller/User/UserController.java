@@ -1,14 +1,14 @@
-package Controller.User;
+package com.example.demo.Controller.User;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 
-import Model.User.User;
-import Service.User.*;
-import Service.JwtService;
-import DTO.*;
-import Exception.User.UserException.*;
+import com.example.demo.Model.User.*;
+import com.example.demo.Service.User.*;
+import com.example.demo.Service.JwtService;
+import com.example.demo.DTO.*;
+import com.example.demo.Exception.User.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -27,7 +27,7 @@ public class UserController {
             User savedUser = userService.registerUser(registerRequest);
             savedUser.setPassword(null);
             return ResponseEntity.ok(savedUser);
-        } catch (EmailAlreadyExistsException e) {
+        } catch (UserException.EmailAlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed");
@@ -36,11 +36,16 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest) {
-        User user = userService.loginUser(loginRequest).get();  // assumes login is successful or throws
+        try {
+            User user = userService.loginUser(loginRequest)
+                    .orElseThrow(UserException.InvalidCredentialsException::new);
 
-        String token = jwtService.generateToken(user);
-        return ResponseEntity.ok(token);
-    }
+            String token = jwtService.generateToken(user);
+            return ResponseEntity.ok(token);
+        } catch (UserException.InvalidCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+        }
 
     @PutMapping("/{userId}/change-password")
     public ResponseEntity<?> changePassword(
@@ -56,6 +61,10 @@ public class UserController {
         return ResponseEntity.ok(role);
     }
 
+    @GetMapping("/ping")
+    public String ping() {
+        return "pong";
+    }
 
 }
 

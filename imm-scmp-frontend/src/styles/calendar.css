@@ -1,0 +1,9 @@
+.react-calendar {
+  @apply rounded-2xl shadow-xl bg-white p-4;
+}
+.react-calendar__tile--active {
+  @apply bg-blue-600 text-white;
+}
+.react-calendar__tile--now {
+  @apply bg-blue-100;
+}

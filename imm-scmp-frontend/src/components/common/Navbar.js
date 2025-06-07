@@ -21,7 +21,7 @@ import {
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const role = 'TEACHER'; // Mock role
+  const role = 'STUDENT'; // Mock role
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleAvatarClick = (event) => {
@@ -35,6 +35,7 @@ const Navbar = () => {
   const handleLogout = () => {
     handleClose();
     console.log('Logging out...');
+    navigate('/login');
   };
 
   return (

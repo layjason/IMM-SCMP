@@ -1,4 +1,4 @@
-package Exception.User;
+package com.example.demo.Exception.User;
 
 public class UserException {
 

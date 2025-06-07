@@ -1,17 +1,6 @@
-import { React, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Alert,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-} from '@mui/material';
-import '../../styles/Register.css'; // 使用独立样式文件
+import { ErrorOutline } from '@mui/icons-material';
 
 function Register() {
   const [email, setEmail] = useState('');
@@ -62,98 +51,133 @@ function Register() {
   };
 
   return (
-    <Box className="register-root">
-      <Box className="register-left">
-        <Typography variant="h4" className="register-title">
-          加入软课程管理平台
-        </Typography>
-        <Typography className="register-subtitle">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex flex-col lg:flex-row">
+      {/* Left Section */}
+      <div className="lg:w-1/2 p-8 flex flex-col justify-center bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+        <h1 className="text-3xl font-bold mb-4">加入软课程管理平台</h1>
+        <p className="text-lg text-blue-100">
           注册成为教师、助教或学生，管理你的课程资源。
-        </Typography>
-      </Box>
+        </p>
+      </div>
 
-      <Box className="register-right">
-        <Box className="register-box">
-          <Typography variant="h5" component="h5">
-            注册
-          </Typography>
-
-          <TextField
-            label="邮箱地址"
-            fullWidth
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            margin="normal"
-            required
-          />
-
-          <TextField
-            label="姓名"
-            fullWidth
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            margin="normal"
-            required
-          />
-
-          <FormControl fullWidth margin="normal" required>
-            <InputLabel>角色</InputLabel>
-            <Select value={role} onChange={(e) => setRole(e.target.value)}>
-              <MenuItem value="teacher">教师</MenuItem>
-              <MenuItem value="assistant">助教</MenuItem>
-              <MenuItem value="student">学生</MenuItem>
-            </Select>
-          </FormControl>
-
-          <TextField
-            label="密码"
-            fullWidth
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            margin="normal"
-            required
-          />
-
-          <TextField
-            label="确认密码"
-            fullWidth
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            margin="normal"
-            required
-          />
-
+      {/* Right Section */}
+      <div className="lg:w-1/2 p-8 flex items-center justify-center">
+        <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 p-8 w-full max-w-md">
+          <h2 className="text-2xl font-bold text-slate-700 mb-6">注册</h2>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
+                邮箱地址
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white"
+                placeholder="请输入邮箱地址"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
+                学号
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white"
+                placeholder="请输入学号"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
+                姓名
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white"
+                placeholder="请输入姓名"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
+                角色
+              </label>
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white"
+                required
+              >
+                <option value="" disabled>
+                  请选择角色
+                </option>
+                <option value="teacher">教师</option>
+                <option value="assistant">助教</option>
+                <option value="student">学生</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
+                密码
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white"
+                placeholder="请输入密码"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
+                确认密码
+              </label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white"
+                placeholder="请确认密码"
+                required
+              />
+            </div>
+            <button
+              onClick={handleRegister}
+              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
+            >
+              注册
+            </button>
+            <button
+              onClick={() => navigate('/login')}
+              className="w-full text-blue-600 hover:text-blue-800 font-medium py-2 transition-colors duration-200"
+            >
+              已有账号？去登录
+            </button>
+          </div>
           {error && (
-            <Alert severity="error" className="register-alert">
-              {error}
-            </Alert>
+            <div className="fixed bottom-6 right-6 z-50">
+              <div className="px-6 py-4 rounded-xl shadow-lg backdrop-blur-sm bg-red-500/90 text-white flex items-center gap-3">
+                <ErrorOutline className="w-5 h-5" />
+                <span className="font-medium">{error}</span>
+                <button
+                  onClick={() => setError('')}
+                  className="ml-2 text-white/80 hover:text-white"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
           )}
-
-          <Button
-            fullWidth
-            variant="contained"
-            className="register-button"
-            onClick={handleRegister}
-          >
-            注册
-          </Button>
-
-          <Button
-            fullWidth
-            variant="text"
-            color="primary"
-            className="register-link"
-            onClick={() => navigate('/login')}
-          >
-            已有账号？去登录
-          </Button>
-        </Box>
-      </Box>
-    </Box>
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const CourseCard = ({ course }) => {
   const {
@@ -10,7 +11,7 @@ const CourseCard = ({ course }) => {
     students = 0,
     progress = 0,
   } = course;
-
+  const navigate = useNavigate();
   return (
     <div className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:-translate-y-1 h-[500px] flex flex-col">
       {/* Course Image */}
@@ -71,7 +72,12 @@ const CourseCard = ({ course }) => {
 
         {/* Action Buttons */}
         <div className="flex space-x-2 mt-auto">
-          <button className="flex-1 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-2 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl">
+          <button
+            onClick={() => {
+              navigate('/courseDetails');
+            }}
+            className="flex-1 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-2 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl"
+          >
             View Course
           </button>
           <button className="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-all duration-200">
