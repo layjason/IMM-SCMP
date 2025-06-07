@@ -14,8 +14,8 @@ import lombok.*;
 public class CourseChapter {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long chapterId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String chapterId;
 
     private String title;
 
@@ -28,6 +28,10 @@ public class CourseChapter {
     @JoinColumn(name = "course_id")
     private Course course;
 
-    @OneToMany(mappedBy = "chapter", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CourseResource> resources;
+    @ElementCollection
+    @CollectionTable(name = "course_chapter_resource_ids", joinColumns = @JoinColumn(name = "chapter_id"))
+    @Column(name = "resource_id")
+    private List<String> resourceIds;
+
+    private String assignmentId;
 }
