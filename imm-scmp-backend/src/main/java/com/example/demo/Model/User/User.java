@@ -14,7 +14,6 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
