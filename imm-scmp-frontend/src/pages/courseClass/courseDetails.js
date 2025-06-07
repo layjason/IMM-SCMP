@@ -64,8 +64,8 @@ function CourseDetails() {
         setMaterials(mockMaterials);
         setAssignments(mockAssignments);
 
-        // const mockRole = 'student';
-        const mockRole = 'teacher';
+        const mockRole = 'student';
+        // const mockRole = 'teacher';
         setUserRole(mockRole);
       } catch (err) {
         setError('Failed to load course details.');

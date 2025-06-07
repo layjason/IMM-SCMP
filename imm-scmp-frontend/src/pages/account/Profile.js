@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle, ErrorOutline } from '@mui/icons-material';
+import { CheckCircle, ErrorOutline, Close } from '@mui/icons-material';
 
 function Profile() {
   const [user, setUser] = useState({ email: '', name: '', role: '' });
@@ -96,10 +96,25 @@ function Profile() {
     navigate('/login');
   };
 
+  const handleClose = () => {
+    navigate(-1); // Go back to previous page
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center p-8">
-      <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 p-8 w-full max-w-3xl ">
-        <h1 className="text-3xl font-bold text-slate-700 mb-4">个人中心</h1>
+      <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 p-8 w-full max-w-3xl relative">
+        {/* Close button at top-right corner */}
+        <button
+          onClick={handleClose}
+          className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-all duration-200"
+          aria-label="Close"
+        >
+          <Close className="w-6 h-6" />
+        </button>
+
+        <h1 className="text-3xl font-bold text-slate-700 mb-4 pr-12">
+          个人中心
+        </h1>
         <p className="text-lg text-slate-500 mb-6">
           查看和更新您的信息，管理账户安全。
         </p>

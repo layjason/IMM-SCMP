@@ -38,6 +38,9 @@ const Navbar = () => {
     navigate('/login');
   };
 
+  const handleProfile = () => {
+    navigate('/profile');
+  };
   return (
     <AppBar
       position="fixed"
@@ -207,7 +210,7 @@ const Navbar = () => {
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
           <MenuItem
-            onClick={handleClose}
+            onClick={handleProfile}
             sx={{
               py: 2, // Increased padding
               px: 2.5,
@@ -241,7 +244,7 @@ const Navbar = () => {
             }}
           >
             <SettingsOutlined sx={{ mr: 2, color: '#1976d2', fontSize: 24 }} />
-            <Typography variant="body1" fontWeight={500}>
+            <Typography variant="body1" fontWeight={500} color="1976d2">
               Settings
             </Typography>
           </MenuItem>

@@ -20,10 +20,6 @@ function Register() {
       setError('请输入有效的邮箱地址');
       return false;
     }
-    if (password !== confirmPassword) {
-      setError('密码和确认密码不匹配');
-      return false;
-    }
     return true;
   };
 
@@ -35,7 +31,13 @@ function Register() {
       const response = await fetch('http://localhost:8080/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, name, role }),
+        body: JSON.stringify({
+          email,
+          userName: name,
+          password,
+          confirmPassword,
+          role,
+        }),
       });
 
       if (!response.ok) {
@@ -75,19 +77,6 @@ function Register() {
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white"
                 placeholder="请输入邮箱地址"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">
-                学号
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white"
-                placeholder="请输入学号"
                 required
               />
             </div>

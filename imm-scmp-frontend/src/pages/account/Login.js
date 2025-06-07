@@ -24,6 +24,7 @@ function Login() {
       //   throw new Error(errorData.message || '登录失败');
       // }
 
+      // receive a jwt token
       // const data = await response.json();
       // localStorage.setItem('userId', data.userId);
       // alert('登录成功');
@@ -50,14 +51,14 @@ function Login() {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">
-                邮箱
+                学工号 / 邮箱
               </label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white"
-                placeholder="请输入邮箱"
+                placeholder="请输入学工号 / 邮箱"
               />
             </div>
             <div>
