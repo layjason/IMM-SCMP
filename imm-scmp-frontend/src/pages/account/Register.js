@@ -20,10 +20,6 @@ function Register() {
       setError('请输入有效的邮箱地址');
       return false;
     }
-    if (password !== confirmPassword) {
-      setError('密码和确认密码不匹配');
-      return false;
-    }
     return true;
   };
 
@@ -32,10 +28,16 @@ function Register() {
     if (!validateForm()) return;
 
     try {
-      const response = await fetch('http://localhost:8080/api/register', {
+      const response = await fetch('http://localhost:8080/api/users/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, name, role }),
+        body: JSON.stringify({
+          email,
+          userName: name,
+          password,
+          confirmPassword,
+          role,
+        }),
       });
 
       if (!response.ok) {
@@ -43,8 +45,17 @@ function Register() {
         throw new Error(errorData.message || '注册失败');
       }
 
-      alert('注册成功');
-      navigate('/login');
+      const data = await response.json();
+
+      // 如果返回了 token，就存储
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        alert('注册成功，已自动登录');
+        navigate('/courses'); // 直接跳课程页
+      } else {
+        alert('注册成功，请登录');
+        navigate('/login'); // 传统跳登录页
+      }
     } catch (err) {
       setError(err.message);
     }
@@ -75,19 +86,6 @@ function Register() {
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white"
                 placeholder="请输入邮箱地址"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">
-                学号
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white"
-                placeholder="请输入学号"
                 required
               />
             </div>

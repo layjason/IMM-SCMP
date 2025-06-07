@@ -11,8 +11,6 @@ function Login() {
 
   const handleLogin = async () => {
     try {
-      // backend api
-
       const response = await fetch('http://localhost:8080/api/users/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -24,8 +22,10 @@ function Login() {
         throw new Error(errorData.message || '登录失败');
       }
 
+      // 从返回值里拿 token
       const data = await response.json();
-      localStorage.setItem('userId', data.userId);
+      localStorage.setItem('token', data.token); // 存储 JWT token
+
       alert('登录成功');
       navigate('/courses');
     } catch (err) {
@@ -50,14 +50,14 @@ function Login() {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">
-                邮箱
+                学工号 / 邮箱
               </label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white"
-                placeholder="请输入邮箱"
+                placeholder="请输入学工号 / 邮箱"
               />
             </div>
             <div>
