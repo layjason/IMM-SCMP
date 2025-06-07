@@ -2,13 +2,14 @@ import React from 'react'; // Add this line at the top
 import './styles/index.css';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-// import Navbar from './components/common/Navbar';
-// import Sidebar from './components/common/Sidebar';
+import Navbar from './components/common/Navbar';
+import Sidebar from './components/common/Sidebar';
 import Home from './pages/account/Home';
 import Login from './pages/account/Login';
 import Register from './pages/account/Register';
-import CourseForm from './pages/CourseForm';
-
+import Profile from './pages/account/Profile';
+import CourseForm from './pages/courseClass/CourseForm';
+import CourseDetails from './pages/courseClass/courseDetails';
 // import CourseList from './pages/CourseList';
 // import ClassList from './pages/ClassList';
 // import ResourceList from './pages/ResourceList';
@@ -17,13 +18,13 @@ import CourseForm from './pages/CourseForm';
 // import ClassForm from './components/course/ClassForm';
 // import ExerciseSubmission from './components/exercise/ExerciseSubmission';
 
-// const AppLayout = ({ children }) => (
-//   <>
-//     <Navbar />
-//     <Sidebar />
-//     {children}
-//   </>
-// );
+const AppLayout = ({ children }) => (
+  <>
+    <Navbar />
+    <Sidebar />
+    {children}
+  </>
+);
 
 function App() {
   return (
@@ -34,7 +35,16 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/form" element={<CourseForm />} />
+        <Route
+          path="/courseDetails"
+          element={
+            <AppLayout>
+              <CourseDetails />
+            </AppLayout>
+          }
+        />
         {/* <Route path="/courses" element={<ProtectedRoute><CourseList /></ProtectedRoute>} />
           <Route path="/courses/create" element={<ProtectedRoute><CourseForm /></ProtectedRoute>} />
           <Route path="/courses/:courseId/edit" element={<ProtectedRoute><CourseForm /></ProtectedRoute>} />
