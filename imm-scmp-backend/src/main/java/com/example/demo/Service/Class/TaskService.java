@@ -1,34 +1,47 @@
-    package com.example.demo.Service.Class;
+package com.example.demo.Service.Class;
 
-    import com.example.demo.Model.Clazz.ClassTask;
-    import com.example.demo.Repository.Class.TaskRepository;
-    import org.springframework.beans.factory.annotation.Autowired;
-    import org.springframework.stereotype.Service;
-    import java.util.List;
+import com.example.demo.DTO.ClassTaskDTO;
+import com.example.demo.Model.Clazz.ClassTask;
+import com.example.demo.Repository.Class.TaskRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-    @Service
-    public class TaskService {
+import java.time.LocalDate;
+import java.util.List;
 
-        @Autowired
-        private TaskRepository taskRepository;
+@Service
+public class TaskService {
 
-        public ClassTask assignTask(ClassTask task) {
-            if (task.getDeadline() == null) {
-                task.setDeadline(LocalDate.now().plusDays(7)); // default 7 say???
-            }
-            return taskRepository.save(task);
+    @Autowired
+    private TaskRepository taskRepository;
+
+    @Transactional
+    public ClassTask assignTask(ClassTaskDTO taskDTO) {
+        ClassTask task = new ClassTask();
+        task.setClassId(taskDTO.getClassId());
+        task.setTitle(taskDTO.getTitle());
+        task.setDescription(taskDTO.getDescription());
+
+        if (taskDTO.getDeadline() == null) {
+            task.setDeadline(LocalDate.now().plusDays(7));
+        } else {
+            task.setDeadline(taskDTO.getDeadline());
         }
 
-        public List<ClassTask> getTasksByClassId(String classId) {
-            return taskRepository.findByClassId(classId);
-        }
-
-        public ClassTask updateTaskCompletion(String taskId, boolean completed) {
-            ClassTask task = taskRepository.findById(taskId).orElse(null);
-            if (task != null) {
-                task.setCompleted(completed);
-                return taskRepository.save(task);
-            }
-            return null;
-        }
+        task.setCompleted(false);
+        return taskRepository.save(task);
     }
+
+    public List<ClassTask> getTasksByClassId(String classId) {
+        return taskRepository.findByClassId(classId);
+    }
+
+    @Transactional
+    public ClassTask updateTaskCompletion(String taskId, boolean completed) {
+        ClassTask task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+        task.setCompleted(completed);
+        return taskRepository.save(task);
+    }
+}

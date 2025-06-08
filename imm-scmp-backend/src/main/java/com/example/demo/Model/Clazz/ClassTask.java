@@ -26,4 +26,5 @@ public class ClassTask {
 
     private boolean completed;
 
+    //this is comment
 }

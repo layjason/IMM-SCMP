@@ -3,6 +3,7 @@ package com.example.demo.DTO;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.List;
+import com.example.demo.DTO.CourseResourceResponse;
 
 @Getter
 @Setter

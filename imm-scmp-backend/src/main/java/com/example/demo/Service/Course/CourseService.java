@@ -77,19 +77,6 @@ public class CourseService{
                 chapter.setOrderIndex(orderIndex++);
                 chapter.setCourse(course);
 
-                List<CourseResource> resources = new ArrayList<>();
-                if (chapterRequest.getResources() != null) {
-                    for (CreateCourseResourceRequest resourceRequest : chapterRequest.getResources()) {
-                        CourseResource resource = new CourseResource();
-                        resource.setFileName(resourceRequest.getFileName());
-                        resource.setFilePath(resourceRequest.getFilePath());
-                        resource.setResourceType(resourceRequest.getResourceType());
-                        resource.setUploader(creator);
-                        resource.setChapter(chapter);
-                        resources.add(resource);
-                    }
-                }
-                chapter.setResources(resources);
                 chapters.add(chapter);
             }
         }
