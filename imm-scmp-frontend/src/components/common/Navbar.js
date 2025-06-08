@@ -87,7 +87,7 @@ const Navbar = () => {
             { label: 'Classes', path: `/classes` },
             // { label: 'Resources', path: '/resources' },
             { label: 'Assignment', path: '/assignment' },
-            { label: 'Analytics', path: '/history' },
+            { label: 'History', path: '/history' },
           ].map((item) => (
             <Button
               key={item.label}
@@ -132,8 +132,7 @@ const Navbar = () => {
               color="inherit"
               onClick={() => navigate(`/courses/create/${getId()}`)}
               sx={{
-                px: 4, // Increased padding
-                py: 1.5,
+                px: 2, // Increased padding
                 borderRadius: '12px',
                 fontWeight: 900,
                 textTransform: 'none',
