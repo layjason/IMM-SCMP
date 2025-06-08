@@ -132,12 +132,12 @@ const Navbar = () => {
               color="inherit"
               onClick={() => navigate(`/courses/create/${getId()}`)}
               sx={{
-                px: 4, // Increased padding
-                py: 1.5,
+                px: 2, // Increased padding
+                // py: 1.5,
                 borderRadius: '12px',
                 fontWeight: 900,
                 textTransform: 'none',
-                fontSize: '1.1rem',
+                fontSize: '1rem',
                 background: 'white',
                 color: '#1976d2',
                 border: '1px solid rgba(255, 255, 255, 0.3)',
