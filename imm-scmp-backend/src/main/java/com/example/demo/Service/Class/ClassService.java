@@ -20,9 +20,6 @@ public class ClassService {
     private ClassRepository classRepository;
 
     @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
     private UserRepository userRepository;
 
     public ClassEntity createClass(String className, String teacherId) {
