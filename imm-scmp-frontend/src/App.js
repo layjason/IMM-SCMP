@@ -18,6 +18,7 @@ import CreateAssignment from './pages/assignment/CreateAssignment';
 import DoAssignment from './pages/assignment/DoAssignment';
 import MarkAssignment from './pages/assignment/MarkAssignment';
 import Resource from './pages/resources/Resource';
+import HistoryRecords from './pages/history/HistoryRecords';
 
 const AppLayout = ({ children }) => (
   <>
@@ -51,7 +52,7 @@ function App() {
             }
           />
           <Route
-            path="/assignment"
+            path="/assignment/:id"
             element={
               <AppLayout>
                 <Assignment />
@@ -72,10 +73,18 @@ function App() {
             element={<MarkAssignment />}
           />
           <Route
-            path="/resources/upload/:id"
+            path="/resources/:id"
             element={
               <AppLayout>
                 <Resource />
+              </AppLayout>
+            }
+          />
+          <Route
+            path="/history/:id"
+            element={
+              <AppLayout>
+                <HistoryRecords />
               </AppLayout>
             }
           />

@@ -84,10 +84,10 @@ const Navbar = () => {
           {/* Increased gap and margin */}
           {[
             { label: 'Courses', path: `/courses/${id}` },
-            { label: 'Classes', path: `/classes` },
-            // { label: 'Resources', path: '/resources' },
-            { label: 'Assignment', path: '/assignment' },
-            { label: 'History', path: '/history' },
+            // { label: 'Classes', path: `/classes` },
+            { label: 'Resources', path: `/resources` },
+            { label: 'Assignment', path: `/assignment/${id}` },
+            { label: 'History', path: `/history/${id}` },
           ].map((item) => (
             <Button
               key={item.label}
