@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import getId from '../../utils/getId';
-import { ImportContacts, Info } from '@mui/icons-material';
 
 const id = getId();
 const CourseCard = ({ course }) => {
@@ -17,7 +16,6 @@ const CourseCard = ({ course }) => {
   const navigate = useNavigate();
 
   const handleClick = () => navigate(`/courses/${id}/${course.id}`);
-
   return (
     <div className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:-translate-y-1 h-[500px] flex flex-col">
       {/* Course Image */}
@@ -28,9 +26,6 @@ const CourseCard = ({ course }) => {
             {code}
           </span>
         </div>
-        <button className="absolute top-4 right-4 text-white">
-          <Info />
-        </button>
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
         <div className="absolute bottom-10 left-4 right-4">
           <h3 className="text-3xl font-bold text-white mb-1 group-hover:text-gray-200 transition-colors duration-200 drop-shadow-md text-center">
@@ -80,21 +75,16 @@ const CourseCard = ({ course }) => {
         </div>
 
         {/* Action Buttons */}
-        <div>
-          <div className="flex space-x-2 mt-auto">
-            <button
-              onClick={handleClick}
-              className="flex-1 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-2 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl"
-            >
-              View Course
-            </button>
-            <button
-              onClick={() => navigate('/resources')}
-              className="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-all duration-200"
-            >
-              <ImportContacts />
-            </button>
-          </div>
+        <div className="flex space-x-2 mt-auto">
+          <button
+            onClick={handleClick}
+            className="flex-1 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-2 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl"
+          >
+            View Course
+          </button>
+          <button className="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-all duration-200">
+            •••
+          </button>
         </div>
       </div>
     </div>

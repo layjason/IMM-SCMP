@@ -52,7 +52,7 @@ const Sidebar = () => {
         icon: '👩🏻‍🏫',
       },
       {
-        text: 'Upload Resources',
+        text: 'Resources',
         path: `/resources/upload/${user.studentId}`,
         icon: '📁',
       },

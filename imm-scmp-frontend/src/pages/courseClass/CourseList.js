@@ -5,8 +5,8 @@ import CourseCard from '../../components/courseList/CourseCard';
 import Navbar from '../../components/common/Navbar';
 import Sidebar from '../../components/common/Sidebar';
 import { SidebarContext } from '../../utils/SidebarContext';
-// we use the get courses here from our getCourses.js
 import getCourses from '../../utils/getCourses';
+import getId from '../../utils/getId';
 
 const CourseList = () => {
   const { isExpanded } = useContext(SidebarContext);
@@ -18,22 +18,25 @@ const CourseList = () => {
   useEffect(() => {
     const loadCourses = async () => {
       const data = await getCourses();
-      setCourses(data);
-      setFilteredCourses(data);
+      const instructorName = `Instructor ${getId()}`;
+      const filtered = data.filter(
+        (course) => course.instructor === instructorName
+      );
+      setCourses(filtered);
+      setFilteredCourses(filtered);
     };
-
     loadCourses();
   }, []);
 
   useEffect(() => {
     const term = searchTerm.toLowerCase();
-    const yearterm = parseInt(searchTerm, 10);
+    const yearTerm = parseInt(searchTerm, 10);
     const filtered = courses.filter(
       (course) =>
         course.title.toLowerCase().includes(term) ||
         course.code.toLowerCase().includes(term) ||
         course.instructor.toLowerCase().includes(term) ||
-        (!isNaN(yearterm) && course.year === yearterm)
+        (!isNaN(yearTerm) && course.year === yearTerm)
     );
     setFilteredCourses(filtered);
   }, [searchTerm, courses]);
@@ -53,8 +56,6 @@ const CourseList = () => {
         }}
       >
         <Box mt={6} mb={6}>
-          {' '}
-          {/* Increased bottom margin from mb={4} to mb={6} */}
           <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </Box>
         <Box

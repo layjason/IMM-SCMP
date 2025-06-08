@@ -15,10 +15,8 @@ import {
 import getId from '../../utils/getId';
 import getRole from '../../utils/getRole';
 
-// CourseForm component for creating a new course
 function CourseForm() {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     courseName: '',
     chapters: [{ chapterNumber: 1, chapterTitle: '' }],
@@ -32,7 +30,6 @@ function CourseForm() {
 
   useEffect(() => {
     const role = getRole(getId()) || 'TEACHER';
-    console.log('User role:', role);
     setUserRole(role);
   }, []);
 
@@ -75,6 +72,11 @@ function CourseForm() {
     e.preventDefault();
     setIsSubmitting(true);
 
+    if (!formData.courseName.trim() || !formData.objective.trim()) {
+      setError('Course name and objective are required.');
+      setIsSubmitting(false);
+      return;
+    }
     if (formData.chapters.some((ch) => !ch.chapterTitle.trim())) {
       setError('All chapter titles must be filled.');
       setIsSubmitting(false);
@@ -89,34 +91,26 @@ function CourseForm() {
 
       const courseId = `course-${Date.now()}`;
       const courseCode = `CS${Math.floor(Math.random() * 1000)}`;
-      const creatorId = getId() || 'S12345';
+      const creatorId = getId() || 'teacher-001';
       const createdTime = new Date().toISOString();
 
       const newCourse = {
         courseId,
         courseName: formData.courseName,
         courseCode,
-        syllabus: [],
         objective: formData.objective,
         assessmentMethod: formData.assessmentMethod,
         creatorId,
         createdTime,
         chapters: formData.chapters,
+        syllabus: [], // Empty syllabus as in original
       };
 
       const storedCourses = JSON.parse(localStorage.getItem('courses') || '[]');
       storedCourses.push(newCourse);
       localStorage.setItem('courses', JSON.stringify(storedCourses));
 
-      console.log('Simulated created course:', newCourse);
       setSuccess(true);
-      setFormData({
-        courseName: '',
-        chapters: [{ chapterNumber: 1, chapterTitle: '' }],
-        objective: '',
-        assessmentMethod: 'EXAM',
-      });
-
       setTimeout(() => {
         navigate(`/courses/${creatorId}`);
       }, 2000);
@@ -128,7 +122,7 @@ function CourseForm() {
   };
 
   const handleBack = () => {
-    navigate(`/courses/${getId() || 'S12345'}`);
+    navigate(`/courses/${getId() || 'teacher-001'}`);
   };
 
   return (
@@ -242,8 +236,8 @@ function CourseForm() {
                 className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white text-base"
                 required
               >
-                <option value="EXAM">考试 (Exam)</option>
-                <option value="INVESTIGATION">考察 (Investigation)</option>
+                <option value="EXAM">Exam</option>
+                <option value="INVESTIGATION">Investigation</option>
               </select>
             </div>
 

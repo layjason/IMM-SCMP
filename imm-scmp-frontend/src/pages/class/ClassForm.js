@@ -1,91 +1,72 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
+  Class,
   Book,
-  Description,
-  CalendarToday,
+  School,
   Save,
   ArrowBack,
-  CheckCircle,
   ErrorOutline,
-  Schedule,
-  Group,
-  School,
+  CheckCircle,
 } from '@mui/icons-material';
 import getId from '../../utils/getId';
 import getRole from '../../utils/getRole';
-import getCourses from '../../utils/getCourses';
 
+// ClassForm component for creating a new class
 function ClassForm() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     className: '',
-    classCode: '',
-    description: '',
-    year: new Date().getFullYear(),
-    semester: 'Spring',
-    subject: '',
-    studentsCount: 0,
-    maxCapacity: 30,
-    schedule: '',
-    courses: [],
+    selectedCourseIds: [],
   });
-  const [userRole, setUserRole] = useState('');
   const [availableCourses, setAvailableCourses] = useState([]);
+  const [userRole, setUserRole] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Load user role and available courses
   useEffect(() => {
-    const role = getRole(getId()) || 'TEACHER';
+    const role = getRole(getId()) || userRole;
+    const teacherId = getId() || 'T12345';
+    console.log('User role:', role);
     setUserRole(role);
-    const loadCourses = async () => {
-      const courses = await getCourses();
-      setAvailableCourses(courses);
+
+    // Load available courses created by this teacher
+    const loadCourses = () => {
+      const storedCourses = JSON.parse(localStorage.getItem('courses') || '[]');
+      const teacherCourses = storedCourses.filter(
+        (course) => course.creatorId === teacherId
+      );
+      setAvailableCourses(teacherCourses);
     };
+
     loadCourses();
   }, []);
 
-  // Handle changes to text inputs and select
   const handleChange = (e) => {
-    const { name, value, type } = e.target;
-    const finalValue = type === 'number' ? parseInt(value, 10) || 0 : value;
-    setFormData((prev) => ({ ...prev, [name]: finalValue }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
     if (error) setError('');
   };
 
-  // Handle course selection
-  const handleCourseChange = (e) => {
-    const selected = Array.from(
-      e.target.selectedOptions,
-      (option) => option.value
-    );
-    setFormData((prev) => ({ ...prev, courses: selected }));
+  const handleCourseToggle = (courseId) => {
+    setFormData((prev) => {
+      const isSelected = prev.selectedCourseIds.includes(courseId);
+      const newSelectedCourseIds = isSelected
+        ? prev.selectedCourseIds.filter((id) => id !== courseId)
+        : [...prev.selectedCourseIds, courseId];
+
+      return { ...prev, selectedCourseIds: newSelectedCourseIds };
+    });
     if (error) setError('');
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Validate required fields
-    if (
-      !formData.className.trim() ||
-      !formData.classCode.trim() ||
-      !formData.description.trim() ||
-      !formData.subject.trim() ||
-      !formData.schedule.trim()
-    ) {
-      setError('All fields are required.');
-      setIsSubmitting(false);
-      return;
-    }
-
-    // Validate capacity
-    if (formData.studentsCount > formData.maxCapacity) {
-      setError('Current students count cannot exceed maximum capacity.');
+    if (formData.selectedCourseIds.length === 0) {
+      setError('Please select at least one course for this class.');
       setIsSubmitting(false);
       return;
     }
@@ -96,259 +77,157 @@ function ClassForm() {
         throw new Error('No authentication token found');
       }
 
-      // Create new class object with all required fields
       const classId = `class-${Date.now()}`;
-      const instructorId = getId();
+      const teacherId = getId() || 'T12345';
       const createdTime = new Date().toISOString();
 
       const newClass = {
         classId,
         className: formData.className,
-        classCode: formData.classCode,
-        description: formData.description,
-        instructorId,
-        year: formData.year,
-        semester: formData.semester,
-        subject: formData.subject,
-        studentsCount: formData.studentsCount,
-        maxCapacity: formData.maxCapacity,
-        schedule: formData.schedule,
-        courses: formData.courses,
+        teacherId,
+        courseIds: formData.selectedCourseIds,
+        studentIds: [], // Empty initially
         createdTime,
       };
 
-      // Save to localStorage
       const storedClasses = JSON.parse(localStorage.getItem('classes') || '[]');
       storedClasses.push(newClass);
       localStorage.setItem('classes', JSON.stringify(storedClasses));
 
-      console.log('Created class:', newClass);
-      setSuccess(true);
+      console.log('Simulated created class:', newClass);
 
-      // Navigate back to classes after 2 seconds
+      setSuccess(true);
+      setFormData({
+        className: '',
+        selectedCourseIds: [],
+      });
+
       setTimeout(() => {
-        navigate(`/classes/${instructorId}`);
+        navigate(`/classes/${teacherId}`);
       }, 2000);
     } catch (err) {
-      setError(err.message || 'Failed to save class. Please try again.');
+      setError(err.message || 'Failed to create class. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Handle back navigation
   const handleBack = () => {
-    navigate(`/classes/${getId()}`);
+    navigate(`/classes/${getId() || 'T12345'}`);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex justify-center items-center py-8">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-100 flex justify-center items-center">
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl shadow-slate-200/50 overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-6 text-white">
+        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-6 text-white">
           <div className="flex items-center justify-between">
             <button
               onClick={handleBack}
-              className="flex items-center gap-2 text-blue-600 bg-white border border-blue-600 font-medium text-sm px-3 py-1.5 rounded-lg transition-all duration-200"
+              className="flex items-center gap-2 text-emerald-600 bg-white border border-emerald-600 font-medium text-sm px-3 py-1.5 rounded-lg transition-all duration-200"
             >
               <ArrowBack className="w-5 h-5" />
               Back
             </button>
             <div className="flex items-center gap-3">
-              <Book className="w-7 h-7 text-white" />
+              <Class className="w-7 h-7 text-white" />
               <h1 className="text-xl font-bold">Create New Class</h1>
             </div>
           </div>
         </div>
+
         <div className="px-6 py-6">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Row 1: Class Name and Code */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <Book className="text-blue-600 w-5 h-5" />
-                  Class Name
-                </label>
-                <input
-                  type="text"
-                  name="className"
-                  value={formData.className}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white text-base"
-                  placeholder="Enter the class name"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <Book className="text-blue-600 w-5 h-5" />
-                  Class Code
-                </label>
-                <input
-                  type="text"
-                  name="classCode"
-                  value={formData.classCode}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white text-base"
-                  placeholder="e.g., CLS101"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Row 2: Subject and Year/Semester */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <School className="text-emerald-600 w-5 h-5" />
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white text-base"
-                  placeholder="e.g., Computer Science"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <CalendarToday className="text-purple-600 w-5 h-5" />
-                  Semester
-                </label>
-                <select
-                  name="semester"
-                  value={formData.semester}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white text-base"
-                  required
-                >
-                  <option value="Spring">Spring</option>
-                  <option value="Summer">Summer</option>
-                  <option value="Fall">Fall</option>
-                  <option value="Winter">Winter</option>
-                </select>
-              </div>
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <CalendarToday className="text-purple-600 w-5 h-5" />
-                  Year
-                </label>
-                <input
-                  type="number"
-                  name="year"
-                  value={formData.year}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white text-base"
-                  placeholder="2025"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Schedule */}
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                <Schedule className="text-indigo-600 w-5 h-5" />
-                Schedule
+                <School className="text-emerald-600 w-5 h-5" />
+                Class Name
               </label>
               <input
                 type="text"
-                name="schedule"
-                value={formData.schedule}
+                name="className"
+                value={formData.className}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white text-base"
-                placeholder="e.g., Mon, Wed, Fri 10:00-11:00 AM"
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white text-base"
+                placeholder="Enter the class name (e.g., Computer Science 2024)"
                 required
               />
             </div>
 
-            {/* Row 3: Student Capacity */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <Group className="text-green-600 w-5 h-5" />
-                  Current Students
-                </label>
-                <input
-                  type="number"
-                  name="studentsCount"
-                  value={formData.studentsCount}
-                  onChange={handleChange}
-                  min="0"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white text-base"
-                  placeholder="0"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <Group className="text-green-600 w-5 h-5" />
-                  Maximum Capacity
-                </label>
-                <input
-                  type="number"
-                  name="maxCapacity"
-                  value={formData.maxCapacity}
-                  onChange={handleChange}
-                  min="1"
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white text-base"
-                  placeholder="30"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Description */}
-            <div className="space-y-2">
+            <div className="space-y-3">
               <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                <Description className="text-orange-600 w-5 h-5" />
-                Description
+                <Book className="text-blue-600 w-5 h-5" />
+                Select Courses for This Class
               </label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                rows={3}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white text-base resize-none"
-                placeholder="Describe the class"
-                required
-              />
+
+              {availableCourses.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <Book className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                  <p className="text-lg font-medium">No courses available</p>
+                  <p className="text-sm">
+                    Create some courses first before creating a class
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => navigate('/courses/create')}
+                    className="mt-3 text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    Create Course →
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-3 max-h-60 overflow-y-auto">
+                  {availableCourses.map((course) => (
+                    <div
+                      key={course.courseId}
+                      className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                        formData.selectedCourseIds.includes(course.courseId)
+                          ? 'border-emerald-500 bg-emerald-50'
+                          : 'border-slate-200 hover:border-emerald-300 hover:bg-emerald-25'
+                      }`}
+                      onClick={() => handleCourseToggle(course.courseId)}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-slate-700">
+                            {course.courseName}
+                          </h4>
+                          <p className="text-sm text-slate-500">
+                            {course.courseCode} • {course.objective}
+                          </p>
+                        </div>
+                        <div
+                          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                            formData.selectedCourseIds.includes(course.courseId)
+                              ? 'border-emerald-500 bg-emerald-500'
+                              : 'border-slate-300'
+                          }`}
+                        >
+                          {formData.selectedCourseIds.includes(
+                            course.courseId
+                          ) && <CheckCircle className="w-3 h-3 text-white" />}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {formData.selectedCourseIds.length > 0 && (
+                <div className="mt-3 p-3 bg-emerald-50 rounded-lg">
+                  <p className="text-sm text-emerald-700 font-medium">
+                    Selected: {formData.selectedCourseIds.length} course(s)
+                  </p>
+                </div>
+              )}
             </div>
 
-            {/* Courses */}
-            {userRole === 'TEACHER' && (
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <Book className="text-emerald-600 w-5 h-5" />
-                  Select Courses
-                </label>
-                <select
-                  name="courses"
-                  multiple
-                  value={formData.courses}
-                  onChange={handleCourseChange}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white text-base"
-                  size="4"
-                >
-                  {availableCourses.map((course) => (
-                    <option key={course.id} value={course.id}>
-                      {course.title} ({course.code})
-                    </option>
-                  ))}
-                </select>
-                <p className="text-xs text-slate-500">
-                  Hold Ctrl/Cmd to select multiple courses
-                </p>
-              </div>
-            )}
-
-            {/* Submit Button */}
             <div className="pt-4">
               <button
                 type="submit"
-                disabled={isSubmitting || success}
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-slate-400 disabled:to-slate-500 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-3 shadow-md hover:shadow-lg disabled:cursor-not-allowed text-base"
+                disabled={
+                  isSubmitting || success || availableCourses.length === 0
+                }
+                className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 disabled:from-slate-400 disabled:to-slate-500 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-3 shadow-md hover:shadow-lg disabled:cursor-not-allowed text-base"
               >
                 {isSubmitting ? (
                   <>
@@ -387,7 +266,7 @@ function ClassForm() {
                 <CheckCircle className="w-5 h-5" />
               )}
               <span className="font-semibold text-base">
-                {error || 'Class saved successfully!'}
+                {error || 'Class created successfully!'}
               </span>
               <button
                 onClick={() => {
