@@ -15,6 +15,8 @@ import CourseDetails from './pages/courseClass/courseDetails';
 import Assignment from './pages/assignment/Assignment';
 import CreateAssignment from './pages/assignment/CreateAssignment';
 import DoAssignment from './pages/assignment/DoAssignment';
+import MarkAssignment from './pages/assignment/MarkAssignment';
+import Resource from './pages/resources/Resource';
 
 const AppLayout = ({ children }) => (
   <>
@@ -35,7 +37,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/courses/create/:id" element={<CourseForm />} />
-          <Route path="/courses" element={<CourseList />} />
+          <Route path="/courses/:id" element={<CourseList />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/form" element={<CourseForm />} />
           <Route
@@ -62,6 +64,18 @@ function App() {
           <Route
             path="/course/:courseId/assignment/:assignmentId"
             element={<DoAssignment />}
+          />
+          <Route
+            path="/course/:courseId/markAssignment/:assignmentId"
+            element={<MarkAssignment />}
+          />
+          <Route
+            path="/resources"
+            element={
+              <AppLayout>
+                <Resource />
+              </AppLayout>
+            }
           />
         </Routes>
       </BrowserRouter>
