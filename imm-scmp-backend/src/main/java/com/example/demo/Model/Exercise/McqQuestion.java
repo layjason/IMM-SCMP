@@ -11,7 +11,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MCQQuestion extends Question {
+public class McqQuestion extends Question {
     private String optionA;
     private String optionB;
     private String optionC;

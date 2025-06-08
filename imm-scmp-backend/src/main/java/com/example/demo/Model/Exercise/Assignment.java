@@ -19,14 +19,8 @@ public class Assignment {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String assignmentId;
 
-    @ElementCollection
-    @CollectionTable(name = "assignment_mcq_questions", joinColumns = @JoinColumn(name = "assignment_id"))
-    @Column(name = "mcq_question_id")
     private List<String> mcqQuestionId;
 
-    @ElementCollection
-    @CollectionTable(name = "assignment_coding_questions", joinColumns = @JoinColumn(name = "assignment_id"))
-    @Column(name = "coding_question_id")
     private List<String> codingQuestionId;
 
     @CreationTimestamp
