@@ -11,11 +11,9 @@ import Profile from './pages/account/Profile';
 import CourseList from './pages/courseClass/CourseList';
 import CourseForm from './pages/courseClass/CourseForm';
 import CourseDetails from './pages/courseClass/courseDetails';
-// import ResourceList from './pages/ResourceList';
-// import ExerciseList from './pages/ExerciseList';
-// import HistoryList from './pages/HistoryList';
-// import ClassForm from './components/course/ClassForm';
-// import ExerciseSubmission from './components/exercise/ExerciseSubmission';
+import Assignment from './pages/assignment/Assignment';
+import CreateAssignment from './pages/assignment/CreateAssignment';
+import DoAssignment from './pages/assignment/DoAssignment';
 
 const AppLayout = ({ children }) => (
   <>
@@ -46,15 +44,23 @@ function App() {
             </AppLayout>
           }
         />
-        {/* <Route path="/courses" element={<ProtectedRoute><CourseList /></ProtectedRoute>} />
-          <Route path="/courses/create" element={<ProtectedRoute><CourseForm /></ProtectedRoute>} />
-          <Route path="/courses/:courseId/edit" element={<ProtectedRoute><CourseForm /></ProtectedRoute>} />
-          <Route path="/classes" element={<ProtectedRoute><ClassList /></ProtectedRoute>} />
-          <Route path="/classes/create" element={<ProtectedRoute><ClassForm /></ProtectedRoute>} />
-          <Route path="/resources" element={<ProtectedRoute><ResourceList /></ProtectedRoute>} />
-          <Route path="/exercises" element={<ProtectedRoute><ExerciseList /></ProtectedRoute>} />
-          <Route path="/exercises/:exerciseId/submit" element={<ProtectedRoute><ExerciseSubmission /></ProtectedRoute>} />
-          <Route path="/history" element={<ProtectedRoute><HistoryList /></ProtectedRoute>} />  */}
+        <Route
+          path="/assignment"
+          element={
+            <AppLayout>
+              <Assignment />
+            </AppLayout>
+          }
+        />
+        <Route
+          // path="/course/:courseId/assignment/create"
+          path="/createAssignment"
+          element={<CreateAssignment />}
+        />
+        <Route
+          path="/course/:courseId/assignment/:assignmentId"
+          element={<DoAssignment />}
+        />
       </Routes>
     </BrowserRouter>
   );

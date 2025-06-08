@@ -21,7 +21,7 @@ import {
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const role = 'STUDENT'; // Mock role
+  const role = 'TEACHER'; // Mock role
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleAvatarClick = (event) => {
@@ -80,7 +80,7 @@ const Navbar = () => {
           {[
             { label: 'Courses', path: '/courses' },
             { label: 'Resources', path: '/resources' },
-            { label: 'Exercises', path: '/exercises' },
+            { label: 'Assignment', path: '/assignment' },
             { label: 'Analytics', path: '/history' },
           ].map((item) => (
             <Button

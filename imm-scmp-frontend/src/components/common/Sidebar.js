@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Sidebar = () => {
   const [activeItem, setActiveItem] = useState('/courses');
-  const role = 'STUDENT';
+  const role = 'TEACHER';
   const navigate = useNavigate();
 
   const teacherMenu = [
