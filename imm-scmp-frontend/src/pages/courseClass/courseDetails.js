@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../../styles/calendar.css';
+// import getRole from '../../utils/getRole';
 import {
   ArrowBack,
   CheckCircle,
@@ -13,6 +14,9 @@ import TeacherControls from '../../components/courseDetails/TeacherControls';
 import StudentManagement from '../../components/courseDetails/StudentManagement';
 import MaterialList from '../../components/courseDetails/AssignmentList';
 import AssignmentList from '../../components/courseDetails/MaterialsList';
+import getId from '../../utils/getId';
+import { SidebarContext } from '../../utils/SidebarContext';
+import getRole from '../../utils/getRole';
 
 function CourseDetails() {
   const { courseId } = useParams();
@@ -21,19 +25,21 @@ function CourseDetails() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [materials, setMaterials] = useState([]);
   const [assignments, setAssignments] = useState([]);
-  const [userRole, setUserRole] = useState('student'); // Mock: 'teacher' or 'student'
+  const [userRole, setUserRole] = useState(''); // Mock: 'teacher' or 'student'
   const [file, setFile] = useState(null);
   const [assignmentText, setAssignmentText] = useState('');
   const [showStudentManagement, setShowStudentManagement] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const { isExpanded } = useContext(SidebarContext);
+  const drawerWidth = isExpanded ? 300 : 80;
 
   // Mock data fetch for course and content
   useEffect(() => {
     const fetchCourse = async () => {
       try {
         // Mock API call
-        const mockCourse = { name: 'Advanced React Development' };
+        const mockCourse = { name: '操作系统' };
         setCourse(mockCourse);
 
         // Mock materials and assignments
@@ -64,8 +70,9 @@ function CourseDetails() {
         setMaterials(mockMaterials);
         setAssignments(mockAssignments);
 
-        const mockRole = 'student';
-        // const mockRole = 'teacher';
+        // const mockRole = 'STUDENT';
+        const mockRole = getRole(getId());
+        console.log(mockRole);
         setUserRole(mockRole);
       } catch (err) {
         setError('Failed to load course details.');
@@ -160,22 +167,26 @@ function CourseDetails() {
   };
 
   return (
-    <div className="ml-[300px] min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div
+      className={`ml-[${drawerWidth}px] min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100`}
+    >
       {/* Header */}
       <div className="flex justify-center bg-white/80 backdrop-blur-sm border-b border-slate-200/60 sticky top-0 z-10">
         <button
-          onClick={() => navigate('/courses')}
-          className="mt-20 flex items-center gap-2 text-slate-600 font-semibold py-2 px-6"
+          onClick={() => navigate(`/courses/${getId()}`)}
+          className={`mt-20 flex items-center gap-2 text-slate-600 font-semibold py-2 px-6 ${
+            drawerWidth === 80 ? 'ml-20' : ''
+          }`}
         >
           <ArrowBack className="w-5 h-5 " />
           Back to Courses
         </button>
-        <div className="mt-20 max-w-6xl mx-auto px-6 py-4 ">
+        <div className="ml-[-1px] mt-20 max-w-6xl mx-auto px-6 py-4 ">
           <h1 className="text-2xl font-bold text-slate-700">{course.name}</h1>
         </div>
       </div>
       <div className="flex justify-end mr-10 mt-5">
-        {userRole === 'teacher' && (
+        {userRole === 'TEACHER' && (
           <button
             onClick={() => setShowStudentManagement(true)}
             className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-2 px-6 rounded-xl transition-all duration-200 items-center gap-2 shadow-md hover:shadow-lg"
@@ -210,7 +221,8 @@ function CourseDetails() {
         {/* Content Section */}
         <div className="lg:w-2/3 bg-white rounded-2xl shadow-xl shadow-slate-200/50 p-6">
           <h2 className="text-xl font-semibold text-slate-700 mb-4">
-            Content for {selectedDate.toLocaleDateString()}
+            {`Content for ${selectedDate.getDate() < 10 ? '0' + selectedDate.getDate() : selectedDate.getDate()} / ${selectedDate.getMonth() < 10 ? '0' + selectedDate.getMonth() : selectedDate.getMonth()} / ${selectedDate.getFullYear()}`}
+            {/* Content for {selectedDate.toLocaleDateString('zh-CN')} */}
           </h2>
           <MaterialList materials={filteredMaterials} />
           <AssignmentList
@@ -220,7 +232,7 @@ function CourseDetails() {
           />
 
           {/* Teacher Controls */}
-          {userRole === 'teacher' && (
+          {userRole === 'TEACHER' && (
             <TeacherControls
               setFile={setFile}
               assignmentText={assignmentText}
@@ -230,7 +242,7 @@ function CourseDetails() {
             />
           )}
         </div>
-        {showStudentManagement && userRole === 'teacher' && (
+        {showStudentManagement && userRole === 'TEACHER' && (
           <StudentManagement
             courseId={courseId}
             onClose={() => setShowStudentManagement(false)}

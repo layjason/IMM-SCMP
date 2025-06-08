@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import getRole from '../../utils/getRole';
+import getId from '../../utils/getId';
 import {
   AppBar,
   Toolbar,
@@ -21,7 +23,9 @@ import {
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const role = 'STUDENT'; // Mock role
+  //get 学工号
+  const id = getId();
+  const role = getRole(id);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleAvatarClick = (event) => {
@@ -33,6 +37,7 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('token'); // Clear token
     handleClose();
     console.log('Logging out...');
     navigate('/login');
@@ -71,7 +76,7 @@ const Navbar = () => {
             letterSpacing: '0.5px',
           }}
         >
-          IMM-SCMP
+          {getId()}
         </Typography>
         {/* Navigation Links */}
         <Box sx={{ display: 'flex', gap: 1.5, mr: 4 }}>
@@ -124,7 +129,7 @@ const Navbar = () => {
           {role === 'TEACHER' && (
             <Button
               color="inherit"
-              onClick={() => navigate('/courses/create')}
+              onClick={() => navigate(`/courses/create/${getId()}`)}
               sx={{
                 px: 4, // Increased padding
                 py: 1.5,

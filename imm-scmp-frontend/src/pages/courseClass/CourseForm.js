@@ -12,6 +12,7 @@ import {
   CheckCircle,
   ErrorOutline,
 } from '@mui/icons-material';
+import getId from '../../utils/getId';
 
 function CourseForm() {
   const courseId = null;
@@ -51,6 +52,8 @@ function CourseForm() {
   };
 
   const handleSubmit = async (e) => {
+    // api get request to get courses list
+    // put request to update the list
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -70,7 +73,7 @@ function CourseForm() {
 
   const handleBack = () => {
     console.log('Would navigate back to /courses');
-    navigate('/courses');
+    navigate(`/courses/${getId()}`);
   };
 
   return (
@@ -155,6 +158,7 @@ function CourseForm() {
                   <ListAlt className="text-emerald-600" />
                   Course Outline
                 </label>
+                {/*change to pdf?*/}
                 <textarea
                   name="outline"
                   value={formData.outline}
@@ -198,6 +202,7 @@ function CourseForm() {
                   placeholder="How will students be evaluated? (exams, projects, assignments, etc.)"
                   required
                 />
+                {/*选择题*/}
               </div>
 
               {/* Submit Button */}

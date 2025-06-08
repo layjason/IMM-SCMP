@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, ErrorOutline, Close } from '@mui/icons-material';
+// import getId from '../../utils/getId';
+import getRole from '../../utils/getRole';
+import getId from '../../utils/getId';
 
 function Profile() {
   const [user, setUser] = useState({ email: '', name: '', role: '' });
@@ -12,16 +15,19 @@ function Profile() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
+    const userId = getId();
+    const userRole = getRole(userId);
     const fetchUser = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/user', {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json', 'User-Id': userId },
-        });
-        if (!response.ok) throw new Error('无法获取用户信息');
-        const data = await response.json();
-        setUser({ email: data.email, name: data.name, role: data.role });
+        // const response = await fetch('http://localhost:8080/api/user', {
+        //   method: 'GET',
+        //   headers: { 'Content-Type': 'application/json', 'User-Id': userId },
+        // });
+        // if (!response.ok) throw new Error('无法获取用户信息');
+        // const data = await response.json();
+        // setUser({ email: data.email, name: data.name, role: data.role });
+        // console.log(getRole(getId));
+        setUser({ email: 'test', name: 'Jason', role: userRole });
       } catch (err) {
         setError(err.message);
       }
@@ -153,9 +159,9 @@ function Profile() {
               disabled
               className="w-full px-4 py-3 border border-slate-200 rounded-xl bg-slate-100 cursor-not-allowed"
             >
-              <option value="teacher">教师</option>
-              <option value="assistant">助教</option>
-              <option value="student">学生</option>
+              <option value="TEACHER">教师</option>
+              <option value="ASSISTANT">助教</option>
+              <option value="STUDENT">学生</option>
             </select>
           </div>
           <button

@@ -16,6 +16,7 @@ import CourseDetails from './pages/courseClass/courseDetails';
 // import HistoryList from './pages/HistoryList';
 // import ClassForm from './components/course/ClassForm';
 // import ExerciseSubmission from './components/exercise/ExerciseSubmission';
+import { SidebarProvider } from './utils/SidebarContext';
 
 const AppLayout = ({ children }) => (
   <>
@@ -27,26 +28,26 @@ const AppLayout = ({ children }) => (
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Routes without layout */}
-        <Route path="/" element={<Navigate to="/home" replace />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/courses/create" element={<CourseForm />} />
-        <Route path="/courses" element={<CourseList />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/form" element={<CourseForm />} />
-        <Route
-          path="/courseDetails"
-          element={
-            <AppLayout>
-              <CourseDetails />
-            </AppLayout>
-          }
-        />
-        {/* <Route path="/courses" element={<ProtectedRoute><CourseList /></ProtectedRoute>} />
+    <SidebarProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Routes without layout */}
+          <Route path="/" element={<Navigate to="/home" replace />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/courses/create/:id" element={<CourseForm />} />
+          <Route path="/courses/:id" element={<CourseList />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route
+            path="/courses/:id/:courseId/"
+            element={
+              <AppLayout>
+                <CourseDetails />
+              </AppLayout>
+            }
+          />
+          {/* <Route path="/courses" element={<ProtectedRoute><CourseList /></ProtectedRoute>} />
           <Route path="/courses/create" element={<ProtectedRoute><CourseForm /></ProtectedRoute>} />
           <Route path="/courses/:courseId/edit" element={<ProtectedRoute><CourseForm /></ProtectedRoute>} />
           <Route path="/classes" element={<ProtectedRoute><ClassList /></ProtectedRoute>} />
@@ -55,8 +56,9 @@ function App() {
           <Route path="/exercises" element={<ProtectedRoute><ExerciseList /></ProtectedRoute>} />
           <Route path="/exercises/:exerciseId/submit" element={<ProtectedRoute><ExerciseSubmission /></ProtectedRoute>} />
           <Route path="/history" element={<ProtectedRoute><HistoryList /></ProtectedRoute>} />  */}
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </SidebarProvider>
   );
 }
 
