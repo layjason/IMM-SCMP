@@ -1,16 +1,15 @@
 package com.example.demo.Service.Class;
 
-import com.example.demo.Model.Clazz.ClassTask;
-import com.example.demo.Repository.Class.TaskRepository;
+import com.example.demo.DTO.*;
 import com.example.demo.Model.Clazz.ClassEntity;
 import com.example.demo.Model.User.User;
 import com.example.demo.Repository.Class.ClassRepository;
 import com.example.demo.Repository.User.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-
 import java.util.UUID;
 
 @Service
@@ -22,20 +21,18 @@ public class ClassService {
     @Autowired
     private UserRepository userRepository;
 
-    public ClassEntity createClass(String className, String teacherId) {
-        String classId = UUID.randomUUID().toString();
+    @Transactional
+    public ClassEntity createClass(ClassDTO classDTO) {
         String classCode = generateCustomClassCode();
 
         ClassEntity newClass = ClassEntity.builder()
-                .classId(classId)
-                .className(className)
-                .classCode(classCode)
-                .teacherId(teacherId)
+                .className(classDTO.getClassName())
+                .teacherId(classDTO.getTeacherId())
                 .courseIds(new ArrayList<>())
                 .studentIds(new ArrayList<>())
                 .build();
-
         return classRepository.save(newClass);
+
     }
 
     private String generateCustomClassCode() {
@@ -51,37 +48,48 @@ public class ClassService {
         return String.format("%s%05d", prefix, next);
     }
 
-    public ClassEntity updateClass(String classId, String newName) {
-        ClassEntity clazz = classRepository.findById(classId).orElseThrow();
-        clazz.setClassName(newName);
+    @Transactional
+    public ClassEntity updateClass(String classId, ClassUpdateDTO updateDTO) {
+        ClassEntity clazz = classRepository.findById(classId)
+                .orElseThrow(() -> new RuntimeException("Class not found"));
+        clazz.setClassName(updateDTO.getNewName());
         return classRepository.save(clazz);
     }
 
-    public void importStudents(String classId, List<String> students) {
-        ClassEntity clazz = classRepository.findById(classId).orElseThrow();
+    @Transactional
+    public void importStudents(String classId, ImportStudentsDTO importDTO) {
+        ClassEntity clazz = classRepository.findById(classId)
+                .orElseThrow(() -> new RuntimeException("Class not found"));
         List<String> current = clazz.getStudentIds();
-        current.addAll(students);
+        current.addAll(importDTO.getStudentIds());
         classRepository.save(clazz);
     }
 
-    public ClassEntity joinClass(String studentId, String classCode) {
-        ClassEntity clazz = classRepository.findByClassCode(classCode).orElseThrow();
-        clazz.getStudentIds().add(studentId);
+    @Transactional
+    public ClassEntity joinClass(JoinClassDTO joinDTO) {
+        ClassEntity clazz = classRepository.findByClassCode(joinDTO.getClassCode())
+                .orElseThrow(() -> new RuntimeException("Class not found"));
+        clazz.getStudentIds().add(joinDTO.getStudentId());
         return classRepository.save(clazz);
     }
 
-    public Optional<List<User>> getClassMembers(String classId) {
-        Optional<ClassEntity> classOpt = classRepository.findById(classId);
-        if (classOpt.isEmpty()) return Optional.empty();
-        List<String> studentIds = classOpt.get().getStudentIds();
-        List<User> students = userRepository.findAllByUserIdIn(studentIds);
-        return Optional.of(students);
+    public ClassEntity getClassById(String classId) {
+        return classRepository.findById(classId).orElseThrow(() -> new RuntimeException("Class not found"));
     }
 
-    public void deleteStudent(String classId, String studentId) {
-        ClassEntity clazz = classRepository.findById(classId).orElseThrow();
-        clazz.getStudentIds().remove(studentId);
+
+    public List<User> getClassMembers(String classId) {
+        ClassEntity clazz = classRepository.findById(classId)
+                .orElseThrow(() -> new RuntimeException("Class not found"));
+        List<String> studentIds = clazz.getStudentIds();
+        return userRepository.findAllByUserIdIn(studentIds);
+    }
+
+    @Transactional
+    public void deleteStudent(ClassMemberDTO memberDTO) {
+        ClassEntity clazz = classRepository.findById(memberDTO.getClassId())
+                .orElseThrow(() -> new RuntimeException("Class not found"));
+        clazz.getStudentIds().remove(memberDTO.getStudentId());
         classRepository.save(clazz);
     }
-
 }
