@@ -18,7 +18,7 @@ const ResourcePage = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const { isExpanded } = useContext(SidebarContext);
-  const drawerWidth = isExpanded ? 300 : 80;
+  const drawerWidth = isExpanded ? 300 : 70;
   const [viewMode, setViewMode] = useState('chapter'); // 'chapter' or 'type'
   const [resources, setResources] = useState([]);
   const [chapters, setChapters] = useState([
@@ -141,7 +141,8 @@ const ResourcePage = () => {
   //   const userRole = 'STUDENT';
   return (
     <div
-      className={`ml-[${drawerWidth}px] min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100`}
+      style={{ marginLeft: `${drawerWidth}px` }}
+      className={`min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100`}
     >
       {/* Header */}
       <div className="flex justify-center bg-white/80 backdrop-blur-sm border-b border-slate-200/60 sticky top-0 z-10">

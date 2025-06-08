@@ -72,7 +72,7 @@ function App() {
             element={<MarkAssignment />}
           />
           <Route
-            path="/resources"
+            path="/resources/upload/:id"
             element={
               <AppLayout>
                 <Resource />
