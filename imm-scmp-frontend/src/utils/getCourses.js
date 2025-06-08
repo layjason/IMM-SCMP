@@ -1,64 +1,87 @@
-// Dummy data loader (replace with real DB call later)
-const getCourses = async () => {
-  return [
+// import getId from './getId';
+
+// Initialize mock courses
+const initializeMockCourses = () => {
+  const mockCourses = [
     {
-      id: '1',
-      title: '程序设计',
+      id: 'course-1622998800000',
+      title: 'Introduction to Programming',
       code: 'CS101',
-      description: 'Learn the basics of programming using Python.',
-      instructor: 'Dr. Alice Smith',
-      year: 2024,
+      description: 'Learn the basics of programming.',
+      instructorId: 'T73066209',
+      year: 2025,
+      type: 'EXAM',
+      chapters: ['Intro', 'Variables', 'Loops'],
+      createdTime: '2025-06-08T12:00:00Z',
     },
     {
-      id: '2',
-      title: '数据结构',
+      id: 'course-1622998800001',
+      title: 'Data Structures',
       code: 'CS201',
-      description:
-        'Understand fundamental data structures like arrays, stacks, and trees.',
-      instructor: 'Prof. Bob Johnson',
+      description: 'Study advanced data structures.',
+      instructorId: 'T73066209',
       year: 2025,
+      type: 'INVESTIGATION',
+      chapters: ['Arrays', 'Trees', 'Graphs'],
+      createdTime: '2025-06-08T12:01:00Z',
     },
     {
-      id: '3',
-      title: '计算机伦理',
-      code: 'CS100',
-      description: 'Computer science fundamentals.',
-      instructor: 'Dr. Alice Johnson',
-      year: 2023,
-    },
-    {
-      id: '4',
-      title: 'JavaScript程序设计',
-      code: 'REACT301',
-      description: 'Deep dive into React patterns and hooks.',
-      instructor: 'Mr. Jason Lay',
-      year: 2025,
-    },
-    {
-      id: '5',
-      title: '数据库',
-      code: 'DB202',
-      description: 'Relational databases, indexing, and SQL.',
-      instructor: 'Prof. Maria Gomez',
-      year: 2024,
-    },
-    {
-      id: '6',
-      title: '操作系统',
+      id: 'course-1622998800002',
+      title: 'Algorithms',
       code: 'CS301',
-      description: 'Processes, memory management, and file systems.',
-      instructor: 'Prof. Kim Lee',
+      description: 'Explore algorithm design.',
+      instructorId: 'T12345678',
       year: 2025,
-    },
-    {
-      id: '7',
-      title: '机器学习',
-      code: 'ML101',
-      description: 'Supervised, unsupervised learning, and models.',
-      instructor: 'Dr. Alan Turing',
-      year: 2025,
+      type: 'EXAM',
+      chapters: ['Sorting', 'Searching'],
+      createdTime: '2025-06-08T12:02:00Z',
     },
   ];
+
+  if (!localStorage.getItem('courses')) {
+    localStorage.setItem('courses', JSON.stringify(mockCourses));
+  }
+};
+
+const getCourses = async (instructorIdFromURL = null) => {
+  try {
+    const token = localStorage.getItem('token');
+    console.log(
+      'Fetching courses for instructorId:',
+      instructorIdFromURL || 'all'
+    );
+
+    if (!token) {
+      console.error('No authentication token found');
+      return [];
+    }
+
+    initializeMockCourses();
+
+    const storedCourses = JSON.parse(localStorage.getItem('courses') || '[]');
+
+    const courses = storedCourses
+      .filter((course) => {
+        if (!instructorIdFromURL) return true; // Return all if no instructorId
+        return course.instructorId === instructorIdFromURL;
+      })
+      .map((course) => ({
+        id: course.id,
+        title: course.title,
+        code: course.code,
+        description: course.description,
+        instructor: `Instructor ${course.instructorId}`,
+        year: course.year,
+        type: course.type,
+        chapters: course.chapters,
+      }));
+
+    console.log('Fetched courses:', courses);
+    return courses;
+  } catch (err) {
+    console.error('Error fetching courses:', err.message);
+    return [];
+  }
 };
 
 export default getCourses;

@@ -9,7 +9,7 @@ const Search = ({ searchTerm, setSearchTerm }) => {
       </div>
       <input
         type="text"
-        placeholder="Search courses by title, code, or instructor..."
+        placeholder="Search by title, code, or instructor..."
         className="w-full pl-12 pr-6 py-4 text-lg border border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:border-blue-600 rounded-full transition-all duration-200"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}

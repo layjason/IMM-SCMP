@@ -30,7 +30,7 @@ function Login() {
       // need to be replaced later
       const userid = 'T73066209';
       // localStorage.setItem('userId', user.id); // Optional: store userId if you need it globally
-      localStorage.setItem('token', '12345');
+      localStorage.setItem('token', 'T73066209');
       localStorage.setItem('userId', userid);
       alert('登录成功');
       // navigate(`/courses/${user.id}`);

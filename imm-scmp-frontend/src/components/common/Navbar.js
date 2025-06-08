@@ -76,15 +76,16 @@ const Navbar = () => {
             letterSpacing: '0.5px',
           }}
         >
-          {getId()}
+          {id}
         </Typography>
         {/* Navigation Links */}
         <Box sx={{ display: 'flex', gap: 1.5, mr: 4 }}>
           {' '}
           {/* Increased gap and margin */}
           {[
-            { label: 'Courses', path: '/courses' },
-            { label: 'Resources', path: '/resources' },
+            { label: 'Courses', path: `/courses/${id}` },
+            { label: 'Classes', path: `/classes` },
+            // { label: 'Resources', path: '/resources' },
             { label: 'Assignment', path: '/assignment' },
             { label: 'Analytics', path: '/history' },
           ].map((item) => (
