@@ -98,7 +98,7 @@ function Profile() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('userId');
+    localStorage.clear();
     navigate('/login');
   };
 

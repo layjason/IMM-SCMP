@@ -2,48 +2,39 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Book,
-  Code,
   TrackChanges,
   ListAlt,
   School,
   Save,
-  Edit,
   ArrowBack,
-  CheckCircle,
   ErrorOutline,
+  AddCircleOutline,
+  RemoveCircleOutline,
+  CheckCircle,
 } from '@mui/icons-material';
 import getId from '../../utils/getId';
+import getRole from '../../utils/getRole';
 
+// CourseForm component for creating a new course
 function CourseForm() {
-  const courseId = null;
-  const isEdit = !!courseId;
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    name: '',
-    code: '',
-    outline: '',
-    goals: '',
-    assessment: '',
+    courseName: '',
+    chapters: [{ chapterNumber: 1, chapterTitle: '' }],
+    objective: '',
+    assessmentMethod: 'EXAM',
   });
+  const [userRole, setUserRole] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (isEdit) {
-      const mockCourse = {
-        name: 'Advanced React Development',
-        code: 'REACT301',
-        outline:
-          'Comprehensive course covering advanced React concepts including hooks, context, performance optimization, and modern development patterns.',
-        goals:
-          'Master advanced React patterns, understand performance optimization techniques, and build scalable applications.',
-        assessment:
-          'Project-based assessments, code reviews, and a final capstone project demonstrating mastery of advanced concepts.',
-      };
-      setFormData(mockCourse);
-    }
-  }, [courseId]);
+    const role = getRole(getId()) || 'TEACHER';
+    console.log('User role:', role);
+    setUserRole(role);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -51,197 +42,243 @@ function CourseForm() {
     if (error) setError('');
   };
 
+  const handleChapterChange = (index, value) => {
+    setFormData((prev) => {
+      const newChapters = [...prev.chapters];
+      newChapters[index] = { ...newChapters[index], chapterTitle: value };
+      return { ...prev, chapters: newChapters };
+    });
+    if (error) setError('');
+  };
+
+  const handleAddChapter = () => {
+    setFormData((prev) => ({
+      ...prev,
+      chapters: [
+        ...prev.chapters,
+        { chapterNumber: prev.chapters.length + 1, chapterTitle: '' },
+      ],
+    }));
+  };
+
+  const handleRemoveChapter = (index) => {
+    setFormData((prev) => {
+      const newChapters = prev.chapters
+        .filter((_, i) => i !== index)
+        .map((chapter, i) => ({ ...chapter, chapterNumber: i + 1 }));
+      return { ...prev, chapters: newChapters };
+    });
+    if (error) setError('');
+  };
+
   const handleSubmit = async (e) => {
-    // api get request to get courses list
-    // put request to update the list
     e.preventDefault();
     setIsSubmitting(true);
 
+    if (formData.chapters.some((ch) => !ch.chapterTitle.trim())) {
+      setError('All chapter titles must be filled.');
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      console.log(isEdit ? 'Updating course:' : 'Creating course:', formData);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      const courseId = `course-${Date.now()}`;
+      const courseCode = `CS${Math.floor(Math.random() * 1000)}`;
+      const creatorId = getId() || 'S12345';
+      const createdTime = new Date().toISOString();
+
+      const newCourse = {
+        courseId,
+        courseName: formData.courseName,
+        courseCode,
+        syllabus: [],
+        objective: formData.objective,
+        assessmentMethod: formData.assessmentMethod,
+        creatorId,
+        createdTime,
+        chapters: formData.chapters,
+      };
+
+      const storedCourses = JSON.parse(localStorage.getItem('courses') || '[]');
+      storedCourses.push(newCourse);
+      localStorage.setItem('courses', JSON.stringify(storedCourses));
+
+      console.log('Simulated created course:', newCourse);
       setSuccess(true);
+      setFormData({
+        courseName: '',
+        chapters: [{ chapterNumber: 1, chapterTitle: '' }],
+        objective: '',
+        assessmentMethod: 'EXAM',
+      });
+
       setTimeout(() => {
-        console.log('Would navigate to /courses');
+        navigate(`/courses/${creatorId}`);
       }, 2000);
     } catch (err) {
-      setError('Failed to save course. Please try again.');
+      setError(err.message || 'Failed to save course. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleBack = () => {
-    console.log('Would navigate back to /courses');
-    navigate(`/courses/${getId()}`);
+    navigate(`/courses/${getId() || 'S12345'}`);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-slate-200/60 sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-6 py-4">
-          <div className="flex items-center gap-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex justify-center items-center">
+      <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl shadow-slate-200/50 overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-6 text-white">
+          <div className="flex items-center justify-between">
             <button
               onClick={handleBack}
-              className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors duration-200 group"
+              className="flex items-center gap-2 text-blue-600 bg-white border border-blue-600 font-medium text-sm px-3 py-1.5 rounded-lg transition-all duration-200"
             >
-              <ArrowBack className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" />
-              <span className="font-medium">Back to Courses</span>
+              <ArrowBack className="w-5 h-5" />
+              Back
             </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-6 py-8">
-        <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 overflow-hidden">
-          {/* Form Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-8 text-white">
-            <div className="flex items-center gap-3 mb-4">
-              {isEdit ? (
-                <Edit className="w-8 h-8" />
-              ) : (
-                <School className="w-8 h-8" />
-              )}
-              <h1 className="text-xl font-bold">
-                {isEdit ? 'Update Course' : 'Create New Course'}
-              </h1>
+            <div className="flex items-center gap-3">
+              <School className="w-7 h-7 text-white" />
+              <h1 className="text-xl font-bold">Create New Course</h1>
             </div>
-            <p className="text-blue-100 text-lg">
-              {isEdit
-                ? 'Modify course details and update your curriculum'
-                : 'Design and structure your new course curriculum'}
-            </p>
           </div>
+        </div>
 
-          {/* Form Content */}
-          <div className="p-8">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Course Name */}
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <Book className="text-blue-600" />
-                  Course Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white"
-                  placeholder="Enter the course name"
-                  required
-                />
-              </div>
+        <div className="px-6 py-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                <Book className="text-blue-600 w-5 h-5" />
+                Course Name
+              </label>
+              <input
+                type="text"
+                name="courseName"
+                value={formData.courseName}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white text-base"
+                placeholder="Enter the course name"
+                required
+              />
+            </div>
 
-              {/* Course Code */}
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <Code className="text-indigo-600" />
-                  Course Code
-                </label>
-                <input
-                  type="text"
-                  name="code"
-                  value={formData.code}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white"
-                  placeholder="e.g., CS101, MATH201"
-                  required
-                />
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                <ListAlt className="text-emerald-600 w-5 h-5" />
+                Course Chapters
+              </label>
+              <div className="space-y-3">
+                {formData.chapters.map((chapter, index) => (
+                  <div
+                    key={chapter.chapterNumber}
+                    className="flex items-center gap-3"
+                  >
+                    <span className="text-slate-600 font-medium w-24 text-base">{`Chapter ${chapter.chapterNumber}`}</span>
+                    <input
+                      type="text"
+                      value={chapter.chapterTitle}
+                      onChange={(e) =>
+                        handleChapterChange(index, e.target.value)
+                      }
+                      className="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white text-base"
+                      placeholder={`Enter title for Chapter ${chapter.chapterNumber}`}
+                      required
+                    />
+                    {userRole === 'TEACHER' && formData.chapters.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveChapter(index)}
+                        className="text-red-600 hover:text-red-800 transition-colors duration-200"
+                      >
+                        <RemoveCircleOutline className="w-5 h-5" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+                {userRole === 'TEACHER' && (
+                  <button
+                    type="button"
+                    onClick={handleAddChapter}
+                    className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold text-base transition-colors duration-200"
+                  >
+                    <AddCircleOutline className="w-5 h-5" />
+                    Add Chapter
+                  </button>
+                )}
               </div>
+            </div>
 
-              {/* Course Outline */}
-              {/*chapter and chapter title˜*/}
-              {/*course code will be generated by backend and db*/}
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <ListAlt className="text-emerald-600" />
-                  Course Outline
-                </label>
-                {/*change to pdf?*/}
-                <textarea
-                  name="outline"
-                  value={formData.outline}
-                  onChange={handleChange}
-                  rows={4}
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white resize-none"
-                  placeholder="Describe the course structure, topics covered, and learning progression..."
-                  required
-                />
-              </div>
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                <TrackChanges className="text-orange-600 w-5 h-5" />
+                Learning Objective
+              </label>
+              <textarea
+                name="objective"
+                value={formData.objective}
+                onChange={handleChange}
+                rows={3}
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white text-base resize-none"
+                placeholder="What will students achieve by the end of this course?"
+                required
+              />
+            </div>
 
-              {/* Goals */}
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <TrackChanges className="text-orange-600" />
-                  Learning Goals
-                </label>
-                <textarea
-                  name="goals"
-                  value={formData.goals}
-                  onChange={handleChange}
-                  rows={3}
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white resize-none"
-                  placeholder="What will students achieve by the end of this course?"
-                  required
-                />
-              </div>
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                <CheckCircle className="text-purple-600 w-5 h-5" />
+                Assessment Method
+              </label>
+              <select
+                name="assessmentMethod"
+                value={formData.assessmentMethod}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white text-base"
+                required
+              >
+                <option value="EXAM">考试 (Exam)</option>
+                <option value="INVESTIGATION">考察 (Investigation)</option>
+              </select>
+            </div>
 
-              {/* Assessment */}
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <CheckCircle className="text-purple-600" />
-                  Assessment Methods
-                </label>
-                <textarea
-                  name="assessment"
-                  value={formData.assessment}
-                  onChange={handleChange}
-                  rows={3}
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white resize-none"
-                  placeholder="How will students be evaluated? (exams, projects, assignments, etc.)"
-                  required
-                />
-                {/*选择题*/}
-              </div>
-
-              {/* Submit Button */}
-              <div className="pt-4">
-                <button
-                  type="submit"
-                  disabled={isSubmitting || success}
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-slate-400 disabled:to-slate-500 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                      {isEdit ? 'Updating Course...' : 'Creating Course...'}
-                    </>
-                  ) : success ? (
-                    <>
-                      <CheckCircle className="w-5 h-5" />
-                      Course {isEdit ? 'Updated' : 'Created'} Successfully!
-                    </>
-                  ) : (
-                    <>
-                      <Save className="w-5 h-5" />
-                      {isEdit ? 'Update Course' : 'Create Course'}
-                    </>
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
+            <div className="pt-4">
+              <button
+                type="submit"
+                disabled={isSubmitting || success}
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-slate-400 disabled:to-slate-500 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-3 shadow-md hover:shadow-lg disabled:cursor-not-allowed text-base"
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                    Creating Course...
+                  </>
+                ) : success ? (
+                  <>
+                    <CheckCircle className="w-5 h-5" />
+                    Course Created!
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-5 h-5" />
+                    Create Course
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
 
-      {/* Error/Success Toast */}
       {(error || success) && (
         <div className="fixed bottom-6 right-6 z-50">
           <div
-            className={`px-6 py-4 rounded-xl shadow-lg backdrop-blur-sm transition-all duration-300 ${
+            className={`px-6 py-3 rounded-lg shadow-lg backdrop-blur-sm transition-all duration-300 ${
               error ? 'bg-red-500/90 text-white' : 'bg-green-500/90 text-white'
             }`}
           >
@@ -251,7 +288,7 @@ function CourseForm() {
               ) : (
                 <CheckCircle className="w-5 h-5" />
               )}
-              <span className="font-medium">
+              <span className="font-semibold text-base">
                 {error || 'Course saved successfully!'}
               </span>
               <button
@@ -259,7 +296,7 @@ function CourseForm() {
                   setError('');
                   setSuccess(false);
                 }}
-                className="ml-2 text-white/80 hover:text-white"
+                className="ml-2 text-white/80 hover:text-white text-base"
               >
                 ×
               </button>
@@ -267,7 +304,6 @@ function CourseForm() {
           </div>
         </div>
       )}
-      <span>test</span>
     </div>
   );
 }

@@ -76,17 +76,18 @@ const Navbar = () => {
             letterSpacing: '0.5px',
           }}
         >
-          {getId()}
+          {id}
         </Typography>
         {/* Navigation Links */}
         <Box sx={{ display: 'flex', gap: 1.5, mr: 4 }}>
           {' '}
           {/* Increased gap and margin */}
           {[
-            { label: 'Courses', path: '/courses' },
-            { label: 'Resources', path: '/resources' },
+            { label: 'Courses', path: `/courses/${id}` },
+            { label: 'Classes', path: `/classes` },
+            // { label: 'Resources', path: '/resources' },
             { label: 'Assignment', path: '/assignment' },
-            { label: 'Analytics', path: '/history' },
+            { label: 'History', path: '/history' },
           ].map((item) => (
             <Button
               key={item.label}
@@ -131,12 +132,12 @@ const Navbar = () => {
               color="inherit"
               onClick={() => navigate(`/courses/create/${getId()}`)}
               sx={{
-                px: 4, // Increased padding
-                py: 1.5,
+                px: 2, // Increased padding
+                // py: 1.5,
                 borderRadius: '12px',
                 fontWeight: 900,
                 textTransform: 'none',
-                fontSize: '1.1rem',
+                fontSize: '1rem',
                 background: 'white',
                 color: '#1976d2',
                 border: '1px solid rgba(255, 255, 255, 0.3)',

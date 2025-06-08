@@ -47,9 +47,9 @@ const Sidebar = () => {
     () => [
       { text: 'My Courses', path: `/courses/${user.studentId}`, icon: '📚' },
       {
-        text: 'Manage Classes',
+        text: 'My Classes',
         path: `/classes/${user.studentId}`,
-        icon: '📋',
+        icon: '👩🏻‍🏫',
       },
       {
         text: 'Upload Resources',
