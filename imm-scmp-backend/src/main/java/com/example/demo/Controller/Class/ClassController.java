@@ -40,8 +40,10 @@ public class ClassController {
     }
 
     @GetMapping("/members/{classId}")
-    public List<String> getMembers(@PathVariable String classId) {
-        return classService.getClassMembers(classId);
+    public ResponseEntity<List<User>> getMembers(@PathVariable String classId) {
+        return classService.getClassMembers(classId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/member")
@@ -49,9 +51,5 @@ public class ClassController {
         classService.deleteStudent(classId, studentId);
     }
 
-    @PostMapping("/assign")
-    public ResponseEntity<ClassTask> assignTask(@RequestBody ClassTask task) {
-        return ResponseEntity.ok(taskService.assignTask(task));
-    }
 
 }

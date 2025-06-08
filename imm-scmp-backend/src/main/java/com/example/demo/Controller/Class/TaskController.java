@@ -20,7 +20,7 @@ public class TaskController {
     }
 
     @GetMapping("/class/{classId}")
-    public List<ClassTask> getTasks(@PathVariable String classId) {
+    public List<ClassTask> getTasksByClassId(@PathVariable String classId) {
         return taskService.getTasksByClassId(classId);
     }
 
