@@ -39,9 +39,9 @@ public class ClassController {
         return classService.joinClass(studentId, classCode);
     }
 
-    @GetMapping("/members-with-progress/{classId}")
-    public ResponseEntity<List<StudentChapterDTO>> getMembersWithProgress(@PathVariable String classId) {
-        return classService.getClassMembersWithChapters(classId)
+    @GetMapping("/members/{classId}")
+    public ResponseEntity<List<User>> getMembers(@PathVariable String classId) {
+        return classService.getClassMembers(classId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

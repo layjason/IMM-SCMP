@@ -10,4 +10,3 @@ public interface ClassRepository extends JpaRepository<ClassEntity, String> {
 
     Optional<ClassEntity> findTopByClassCodeStartingWithOrderByClassCodeDesc(String prefix);
 }
-
