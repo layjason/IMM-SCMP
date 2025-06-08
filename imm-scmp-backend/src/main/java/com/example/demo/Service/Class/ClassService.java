@@ -1,8 +1,8 @@
 package com.example.demo.Service.Class;
 
-import com.example.demo.Model.Class.Task;
+import com.example.demo.Model.Clazz.ClassTask;
 import com.example.demo.Repository.Class.TaskRepository;
-import com.example.demo.Model.Class.ClassEntity;
+import com.example.demo.Model.Clazz.ClassEntity;
 import com.example.demo.Repository.Class.ClassRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

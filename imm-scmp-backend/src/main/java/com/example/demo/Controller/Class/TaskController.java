@@ -1,6 +1,6 @@
 package com.example.demo.Controller.Class;
 
-import com.example.demo.Model.Class.Task;
+import com.example.demo.Model.Clazz.ClassTask;
 import com.example.demo.Service.Class.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

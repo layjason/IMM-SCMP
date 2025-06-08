@@ -1,6 +1,6 @@
 package com.example.demo.Controller.Class;
 
-import com.example.demo.Model.Class.StudentProgress;
+import com.example.demo.Model.Clazz.StudentProgress;
 import com.example.demo.Service.Class.StudentProgressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.example.demo.Model.Class;
+package com.example.demo.Model.Clazz;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,6 +7,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "classes")
 public class ClassEntity {

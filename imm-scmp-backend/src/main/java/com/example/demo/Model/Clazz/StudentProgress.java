@@ -1,4 +1,4 @@
-package com.example.demo.Model.Class;
+package com.example.demo.Model.Clazz;
 
 import jakarta.persistence.*;
 import lombok.*;

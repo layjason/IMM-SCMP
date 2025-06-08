@@ -1,6 +1,6 @@
 package com.example.demo.Repository.Class;
 
-import com.example.demo.Model.Class.ClassEntity;
+import com.example.demo.Model.Clazz.ClassEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

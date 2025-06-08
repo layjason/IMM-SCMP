@@ -1,6 +1,6 @@
 package com.example.demo.Service.Class;
 
-import com.example.demo.Model.Class.StudentProgress;
+import com.example.demo.Model.Clazz.StudentProgress;
 import com.example.demo.Repository.Class.StudentProgressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

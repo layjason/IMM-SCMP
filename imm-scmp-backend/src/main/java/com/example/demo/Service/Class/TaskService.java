@@ -1,6 +1,6 @@
 package com.example.demo.Service.Class;
 
-import com.example.demo.Model.Class.Task;
+import com.example.demo.Model.Clazz.ClassTask;
 import com.example.demo.Repository.Class.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

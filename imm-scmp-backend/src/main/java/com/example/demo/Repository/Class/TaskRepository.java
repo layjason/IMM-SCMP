@@ -1,6 +1,6 @@
 package com.example.demo.Repository.Class;
 
-import com.example.demo.Model.Class.Task;
+import com.example.demo.Model.Clazz.ClassTask;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 

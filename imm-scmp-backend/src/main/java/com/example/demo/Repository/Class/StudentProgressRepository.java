@@ -1,6 +1,6 @@
 package com.example.demo.Repository.Class;
 
-import com.example.demo.Model.Class.StudentProgress;
+import com.example.demo.Model.Clazz.StudentProgress;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 

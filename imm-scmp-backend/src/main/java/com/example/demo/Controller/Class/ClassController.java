@@ -1,7 +1,7 @@
 package com.example.demo.Controller.Class;
 
-import com.example.demo.Model.Class.ClassEntity;
-import com.example.demo.Model.Class.Task;
+import com.example.demo.Model.Clazz.ClassEntity;
+import com.example.demo.Model.Clazz.ClassTask;
 import com.example.demo.Service.Class.ClassService;
 import com.example.demo.Service.Class.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
