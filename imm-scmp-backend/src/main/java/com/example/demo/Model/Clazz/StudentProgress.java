@@ -26,4 +26,6 @@ public class StudentProgress {
     private boolean assignmentSubmitted;
 
     private String lastActiveDate;
+
+    //this is comment
 }
