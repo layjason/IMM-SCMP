@@ -1,123 +1,57 @@
-package com.example.demo.Controller.Class;
+package com.example.demo.controller.clazz;
 
 import com.example.demo.DTO.*;
-import com.example.demo.Exception.Class.ClassException;
 import com.example.demo.Model.Clazz.ClassEntity;
-import com.example.demo.Model.User.User;
+import com.example.demo.Model.User.Student;
 import com.example.demo.Service.Class.ClassService;
-import com.example.demo.Service.Class.TaskService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/classes")
+@RequiredArgsConstructor
 public class ClassController {
 
-    @Autowired
-    private ClassService classService;
-
-    @Autowired
-    private TaskService taskService;
+    private final ClassService classService;
 
     @PostMapping
-    public ResponseEntity<?> createClass(@RequestBody ClassDTO classDTO) {
-        try {
-            ClassEntity createdClass = classService.createClass(classDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdClass);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to create class");
-        }
+    public ResponseEntity<ClassResponse> createClass(@RequestBody CreateClassRequest request) {
+        ClassEntity created = classService.createClass(request);
+        return ResponseEntity.status(201).body(ClassResponse.fromEntity(created));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getClass(@PathVariable String id) {
-        try {
-            ClassEntity classEntity = classService.getClassById(id);
-            return ResponseEntity.ok(classEntity);
-        } catch (ClassException.ClassNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to get class");
-        }
+    public ResponseEntity<ClassResponse> getClass(@PathVariable String id) {
+        ClassEntity clazz = classService.getClassById(id);
+        return ResponseEntity.ok(ClassResponse.fromEntity(clazz));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateClass(@PathVariable String id, @RequestBody ClassUpdateDTO updateDTO) {
-        try {
-            ClassEntity updatedClass = classService.updateClass(id, updateDTO);
-            return ResponseEntity.ok(updatedClass);
-        } catch (ClassException.ClassNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to update class");
-        }
-    }
-
-    @PostMapping("/{classId}/students/import")
-    public ResponseEntity<?> importStudents(@PathVariable String classId, @RequestBody ImportStudentsDTO importDTO) {
-        try {
-            classService.importStudents(classId, importDTO);
-            return ResponseEntity.ok().build();
-        } catch (ClassException.ClassNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to import students");
-        }
-    }
-
-    @PostMapping("/join")
-    public ResponseEntity<?> joinClass(@RequestBody JoinClassDTO joinDTO) {
-        try {
-            ClassEntity joinedClass = classService.joinClass(joinDTO);
-            return ResponseEntity.ok(joinedClass);
-        } catch (ClassException.ClassNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ClassException.InvalidClassCodeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to join class");
-        }
+    public ResponseEntity<ClassResponse> updateClass(@RequestBody UpdateClassRequest request) {
+        ClassEntity updated = classService.updateClass(request);
+        return ResponseEntity.ok(ClassResponse.fromEntity(updated));
     }
 
     @GetMapping("/{classId}/members")
-    public ResponseEntity<?> getMembers(@PathVariable String classId) {
-        try {
-            List<User> members = classService.getClassMembers(classId);
-            return ResponseEntity.ok(members);
-        } catch (ClassException.ClassNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to get class members");
-        }
+    public ResponseEntity<List<StudentResponse>> getMembers(@PathVariable String classId) {
+        List<Student> students = classService.getClassMembers(classId);
+        List<StudentResponse> response = students.stream()
+                .map(StudentResponse::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{classId}/members/{studentId}")
-    public ResponseEntity<?> deleteStudent(
-            @PathVariable String classId,
-            @PathVariable String studentId) {
-        try {
-            ClassMemberDTO memberDTO = new ClassMemberDTO();
-            memberDTO.setClassId(classId);
-            memberDTO.setStudentId(studentId);
-            classService.deleteStudent(memberDTO);
-            return ResponseEntity.noContent().build();
-        } catch (ClassException.ClassNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (ClassException.StudentNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to delete student from class");
-        }
+    public ResponseEntity<Void> deleteStudent(@PathVariable String classId,
+                                              @PathVariable String studentId) {
+        RemoveStudentRequest request = new RemoveStudentRequest();
+        request.setClassId(classId);
+        request.setStudentId(studentId);
+        classService.deleteStudent(request);
+        return ResponseEntity.noContent().build();
     }
 }

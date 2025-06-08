@@ -1,7 +1,7 @@
 package com.example.demo.Model.Course;
 
 import com.example.demo.Model.User.*;
-
+import com.example.demo.Model.Clazz.*;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -40,6 +40,10 @@ public class Course {
     @ManyToOne
     @JoinColumn(name = "creator_id", nullable = false)
     private User creator;
+
+    @ManyToOne
+    @JoinColumn(name = "class_id")
+    private ClassEntity clazz;
 
     @CreationTimestamp
     private LocalDateTime createdTime;
