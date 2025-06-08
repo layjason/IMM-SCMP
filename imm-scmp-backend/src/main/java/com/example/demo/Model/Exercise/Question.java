@@ -1,6 +1,7 @@
 package com.example.demo.Model.Exercise;
 
 import jakarta.persistence.*;
+import com.example.demo.Model.Exercise.*;
 
 import lombok.*;
 
@@ -18,7 +19,9 @@ public abstract class Question {
 
     private String questionTitle;
 
-    private String teacherId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assignment_id")
+    private Assignment assignment;
 
 }
 

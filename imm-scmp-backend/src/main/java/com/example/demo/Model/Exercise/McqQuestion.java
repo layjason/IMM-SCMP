@@ -16,5 +16,5 @@ public class McqQuestion extends Question {
     private String optionB;
     private String optionC;
     private String optionD;
-    private String rightAnswer;
+    private String correctAnswer;
 }

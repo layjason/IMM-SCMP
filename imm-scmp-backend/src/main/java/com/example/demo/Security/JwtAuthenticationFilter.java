@@ -31,7 +31,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getServletPath();
-        return path.equals("/api/users/login") || path.equals("/api/users/register");
+        return "OPTIONS".equalsIgnoreCase(request.getMethod()) ||
+                path.startsWith("/api/courses") ||
+                path.startsWith("/api/users") ;
     }
 
     @Override
@@ -40,35 +42,69 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        final String authHeader = request.getHeader("Authorization");
-        String jwt = null;
-        String email = null;
+        try {
+            final String authHeader = request.getHeader("Authorization");
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            jwt = authHeader.substring(7);
-            if (jwtService.isTokenValid(jwt)) {
-                email = jwtService.extractEmail(jwt);
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                sendError(response, "Missing or invalid Authorization header");
+                return;
             }
-        }
 
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            Optional<User> userOpt = userRepository.findByEmail(email);
-            if (userOpt.isPresent()) {
-                User user = userOpt.get();
-                UserDetails userDetails = org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
-                        .password(user.getPassword())
-                        .authorities(user.getRole().name())
-                        .build();
-
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            String jwt = authHeader.substring(7);
+            if (!jwtService.isTokenValid(jwt)) {
+                sendError(response, "Invalid or expired token");
+                return;
             }
-        }
 
-        filterChain.doFilter(request, response);
+            String email = jwtService.extractEmail(jwt);
+            if (email == null) {
+                sendError(response, "Invalid token claims");
+                return;
+            }
+
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                userRepository.findByEmail(email)
+                        .ifPresentOrElse(
+                                user -> setAuthentication(user, request),
+                                () -> sendError(response, "User not found")
+                        );
+            }
+
+            filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            sendError(response, "Authentication failed: " + e.getMessage());
+        }
+    }
+
+    private void setAuthentication(User user, HttpServletRequest request) {
+        UserDetails userDetails = org.springframework.security.core.userdetails.User
+                .withUsername(user.getEmail())
+                .password(user.getPassword())
+                .authorities(user.getRole().name())
+                .build();
+
+        UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                );
+
+        authToken.setDetails(
+                new WebAuthenticationDetailsSource().buildDetails(request)
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+    }
+
+    private void sendError(HttpServletResponse response, String message) {
+        try {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"" + message + "\"}");
+        } catch (IOException e) {
+            logger.error("Failed to send error response", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
     }
 }

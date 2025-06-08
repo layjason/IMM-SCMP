@@ -1,11 +1,10 @@
 package com.example.demo.Controller.Course;
 
-import com.example.demo.DTO.CreateCourseRequest;
-import com.example.demo.DTO.CourseDetailResponse;
-import com.example.demo.Exception.Course.CourseException;
-import com.example.demo.Service.Course.CourseService;
+import com.example.demo.Exception.Course.*;
+import com.example.demo.Service.Course.*;
+import com.example.demo.DTO.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,14 +18,20 @@ public class CourseController {
     private CourseService courseService;
 
     @PostMapping
-    public ResponseEntity<?> createCourse(@RequestBody CreateCourseRequest request) {
+    public ResponseEntity<?> createCourse( @RequestBody CreateCourseRequest request) {
         try {
             CourseDetailResponse createdCourse = courseService.createCourse(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdCourse);
         } catch (CourseException.CourseAlreadyExistsException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(e.getMessage());
+        } catch (CourseException.UnauthorizedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create course");
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to create course");
         }
     }
 
@@ -41,7 +46,7 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getCourse(@PathVariable Integer id) {
+    public ResponseEntity<?> getCourse(@PathVariable String id) {
         try {
             CourseDetailResponse course = courseService.getCourseDetailById(id);
             return ResponseEntity.ok(course);
@@ -53,7 +58,7 @@ public class CourseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCourse(@PathVariable Integer id, @RequestBody CreateCourseRequest request) {
+    public ResponseEntity<?> updateCourse(@PathVariable String id, @RequestBody CreateCourseRequest request) {
         try {
             CourseDetailResponse updated = courseService.updateCourse(id, request);
             return ResponseEntity.ok(updated);
@@ -65,7 +70,7 @@ public class CourseController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCourse(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteCourse(@PathVariable String id) {
         try {
             courseService.deleteCourse(id);
             return ResponseEntity.noContent().build();

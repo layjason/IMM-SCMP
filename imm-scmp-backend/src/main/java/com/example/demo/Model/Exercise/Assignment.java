@@ -5,7 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "assignments")
@@ -19,15 +19,18 @@ public class Assignment {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String assignmentId;
 
-    private List<String> mcqQuestionId;
-
-    private List<String> codingQuestionId;
+    private String assignmentTitle;
 
     @CreationTimestamp
     @Column(name = "created_date", updatable = false)
     private LocalDate createdDate;
 
     @Column(name = "expire_date", nullable = false)
-    private LocalDate expireDate;
+    private LocalDate endDate;
+
+    private String teacherId;
+
+    @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Question> questions;
 
 }
