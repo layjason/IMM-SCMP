@@ -3,7 +3,7 @@ package com.example.demo.Model.User;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import lombok.*;
 
@@ -33,8 +33,8 @@ public abstract class User {
     private Role role;
 
     @CreationTimestamp
-    @Column(name = "created_time", updatable = false)
-    private LocalDateTime createdTime;
+    @Column(name = "created_date", updatable = false)
+    private LocalDate createdDate;
 
     public enum Role {
         STUDENT, TEACHER, ASSISTANT

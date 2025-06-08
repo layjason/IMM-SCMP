@@ -4,22 +4,23 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Data;
+import lombok.*;
 
-@Data
 @Entity
-public class Question {
+@Table(name = "questions")
+@Inheritance(strategy = InheritanceType.JOINED)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public abstract class Question {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private String questionId;
+
     private String questionTitle;
-    private String option1;
-    private String option2;
-    private String option3;
-    private String option4;
-    private String rightAnswer;
-    private String jiaoshi;
+
+    private String teacherId;
 
 }
 

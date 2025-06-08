@@ -14,8 +14,8 @@ import lombok.*;
 public class CourseResource {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long resourceId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String resourceId;
 
     private String fileName;
 

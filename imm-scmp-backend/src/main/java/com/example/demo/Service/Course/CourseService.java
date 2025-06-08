@@ -25,6 +25,9 @@ public class CourseService{
     private CourseChapterRepository chapterRepo;
 
     @Autowired
+    private CourseResourceRepository resourceRepo;
+
+    @Autowired
     private UserRepository userRepo;
 
     private User getCurrentUser() {
@@ -117,6 +120,8 @@ public class CourseService{
                 .map(this::convertToDetailResponse)
                 .collect(Collectors.toList());
     }
+
+
 
     private CourseDetailResponse convertToDetailResponse(Course course) {
         CourseDetailResponse response = new CourseDetailResponse();
