@@ -12,16 +12,16 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
-    public Task assignTask(Task task) {
+    public ClassTask assignTask(ClassTask task) {
         return taskRepository.save(task);
     }
 
-    public List<Task> getTasksByClassId(String classId) {
+    public List<ClassTask> getTasksByClassId(String classId) {
         return taskRepository.findByClassId(classId);
     }
 
-    public Task updateTaskCompletion(String taskId, boolean completed) {
-        Task task = taskRepository.findById(taskId).orElse(null);
+    public ClassTask updateTaskCompletion(String taskId, boolean completed) {
+        ClassTask task = taskRepository.findById(taskId).orElse(null);
         if (task != null) {
             task.setCompleted(completed);
             return taskRepository.save(task);

@@ -50,7 +50,7 @@ public class ClassController {
     }
 
     @PostMapping("/assign")
-    public ResponseEntity<Task> assignTask(@RequestBody Task task) {
+    public ResponseEntity<ClassTask> assignTask(@RequestBody ClassTask task) {
         return ResponseEntity.ok(taskService.assignTask(task));
     }
 

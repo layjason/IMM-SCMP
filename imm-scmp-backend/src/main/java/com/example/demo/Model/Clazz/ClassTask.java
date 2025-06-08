@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Task {
+public class ClassTask {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -15,17 +15,17 @@ public class TaskController {
     private TaskService taskService;
 
     @PostMapping("/assign")
-    public Task assignTask(@RequestBody Task task) {
+    public ClassTask assignTask(@RequestBody ClassTask task) {
         return taskService.assignTask(task);
     }
 
     @GetMapping("/class/{classId}")
-    public List<Task> getTasks(@PathVariable String classId) {
+    public List<ClassTask> getTasks(@PathVariable String classId) {
         return taskService.getTasksByClassId(classId);
     }
 
     @PutMapping("/complete/{taskId}")
-    public Task updateTaskCompletion(@PathVariable String taskId, @RequestParam boolean completed) {
+    public ClassTask updateTaskCompletion(@PathVariable String taskId, @RequestParam boolean completed) {
         return taskService.updateTaskCompletion(taskId, completed);
     }
 }
