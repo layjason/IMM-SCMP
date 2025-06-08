@@ -10,5 +10,5 @@ import java.util.List;
 
 @Repository
 public interface CourseResourceRepository extends JpaRepository<CourseResource, String> {
-    List<CourseResource> findByChapter(CourseChapter chapter);
+    List<CourseResource> findByChapter_ChapterId(String chapterId);
 }

@@ -1,14 +1,15 @@
 package com.example.demo.DTO;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
-public class CourseResourceResponse {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class CourseResourceResponse{
     private String resourceId;
     private String fileName;
-    private String filePath;
     private String resourceType;
+    private String filePath;
+    private String chapterId;
     private String uploaderId;
 }
