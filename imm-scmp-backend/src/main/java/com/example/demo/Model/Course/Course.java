@@ -44,10 +44,8 @@ public class Course {
     @CreationTimestamp
     private LocalDateTime createdTime;
 
-    @ElementCollection
-    @CollectionTable(name = "course_chapters_id", joinColumns = @JoinColumn(name = "course_id"))
-    @Column(name = "chapter_id")
-    private List<String> chapterId;
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseChapter> chapters;
 
     public enum AssessmentMethod {
         EXAM,

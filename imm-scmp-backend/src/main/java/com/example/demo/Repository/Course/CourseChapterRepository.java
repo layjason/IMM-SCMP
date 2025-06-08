@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CourseChapterRepository extends JpaRepository<CourseChapter, Long> {
+public interface CourseChapterRepository extends JpaRepository<CourseChapter, String> {
 
     List<CourseChapter> findByCourseOrderByOrderIndexAsc(Course course);
 }

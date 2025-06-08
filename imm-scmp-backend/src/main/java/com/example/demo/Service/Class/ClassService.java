@@ -3,7 +3,9 @@ package com.example.demo.Service.Class;
 import com.example.demo.Model.Clazz.ClassTask;
 import com.example.demo.Repository.Class.TaskRepository;
 import com.example.demo.Model.Clazz.ClassEntity;
+import com.example.demo.Model.User.User;
 import com.example.demo.Repository.Class.ClassRepository;
+import com.example.demo.Repository.User.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +20,12 @@ public class ClassService {
     private ClassRepository classRepository;
 
     @Autowired
-    private TaskRepository taskRepository;
+    private UserRepository userRepository;
 
     public ClassEntity createClass(String className, String teacherId) {
         String classId = UUID.randomUUID().toString();
-        String classCode = UUID.randomUUID().toString().substring(0, 6);
+        String classCode = generateCustomClassCode();
+
         ClassEntity newClass = ClassEntity.builder()
                 .classId(classId)
                 .className(className)
@@ -31,7 +34,21 @@ public class ClassService {
                 .courseIds(new ArrayList<>())
                 .studentIds(new ArrayList<>())
                 .build();
+
         return classRepository.save(newClass);
+    }
+
+    private String generateCustomClassCode() {
+        String prefix = "CLASS-";
+        Optional<ClassEntity> lastClassOpt = classRepository.findTopByClassCodeStartingWithOrderByClassCodeDesc(prefix);
+        int next = 1;
+        if (lastClassOpt.isPresent()) {
+            String lastCode = lastClassOpt.get().getClassCode();
+            try {
+                next = Integer.parseInt(lastCode.substring(prefix.length())) + 1;
+            } catch (NumberFormatException ignored) {}
+        }
+        return String.format("%s%05d", prefix, next);
     }
 
     public ClassEntity updateClass(String classId, String newName) {
@@ -53,9 +70,12 @@ public class ClassService {
         return classRepository.save(clazz);
     }
 
-    public List<String> getClassMembers(String classId) {
-        ClassEntity clazz = classRepository.findById(classId).orElseThrow();
-        return clazz.getStudentIds();
+    public Optional<List<User>> getClassMembers(String classId) {
+        Optional<ClassEntity> classOpt = classRepository.findById(classId);
+        if (classOpt.isEmpty()) return Optional.empty();
+        List<String> studentIds = classOpt.get().getStudentIds();
+        List<User> students = userRepository.findAllByUserIdIn(studentIds);
+        return Optional.of(students);
     }
 
     public void deleteStudent(String classId, String studentId) {

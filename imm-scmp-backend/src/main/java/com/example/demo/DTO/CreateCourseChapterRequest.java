@@ -9,6 +9,6 @@ import java.util.*;
 @Setter
 public class CreateCourseChapterRequest {
     private String chapterTitle;
-    private String chapterContent;
+    private String content;
     private List<CreateCourseResourceRequest> resources;
 }

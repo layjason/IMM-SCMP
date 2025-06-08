@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CourseResourceResponse {
-    private Long resourceId;
+    private String resourceId;
     private String fileName;
     private String filePath;
     private String resourceType;

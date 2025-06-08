@@ -33,7 +33,20 @@ public class CourseService{
     private User getCurrentUser() {
         String email = AuthUtil.getCurrentUserEmail();
         if (email == null) {
-            throw new UnauthorizedException();
+            //throw new UnauthorizedException();
+            if (email == null) {
+                // Return guest Teacher for testing - remove for production
+                Teacher guest = new Teacher();
+                guest.setUserId("guest");
+                guest.setEmail("guest@example.com");
+                guest.setUserName("Guest Teacher");
+                guest.setPassword("123456781");
+                guest.setRole(User.Role.TEACHER);
+
+                userRepo.save(guest);
+
+                return guest;
+            }
         }
         return userRepo.findByEmail(email)
                 .orElseThrow(RuntimeException::new);
@@ -48,6 +61,7 @@ public class CourseService{
 
         Course course = new Course();
         course.setCourseName(request.getCourseName());
+        course.setCourseCode(request.getCourseCode());
         course.setSyllabus(request.getSyllabus());
         course.setObjective(request.getObjective());
         course.setAssessmentMethod(request.getAssessmentMethod());
@@ -59,8 +73,23 @@ public class CourseService{
             for (CreateCourseChapterRequest chapterRequest : request.getChapters()) {
                 CourseChapter chapter = new CourseChapter();
                 chapter.setTitle(chapterRequest.getChapterTitle());
+                chapter.setContent(chapterRequest.getContent());
                 chapter.setOrderIndex(orderIndex++);
-                chapter.setCourse(course); // Set back reference to course
+                chapter.setCourse(course);
+
+                List<CourseResource> resources = new ArrayList<>();
+                if (chapterRequest.getResources() != null) {
+                    for (CreateCourseResourceRequest resourceRequest : chapterRequest.getResources()) {
+                        CourseResource resource = new CourseResource();
+                        resource.setFileName(resourceRequest.getFileName());
+                        resource.setFilePath(resourceRequest.getFilePath());
+                        resource.setResourceType(resourceRequest.getResourceType());
+                        resource.setUploader(creator);
+                        resource.setChapter(chapter);
+                        resources.add(resource);
+                    }
+                }
+                chapter.setResources(resources);
                 chapters.add(chapter);
             }
         }
@@ -70,17 +99,17 @@ public class CourseService{
         return convertToDetailResponse(savedCourse);
     }
 
-    public Course getCourseById(Integer courseId) {
+    public Course getCourseById(String courseId) {
         return courseRepo.findById(courseId)
                 .orElseThrow(CourseNotFoundException::new);
     }
 
-    public CourseDetailResponse getCourseDetailById(Integer courseId) {
+    public CourseDetailResponse getCourseDetailById(String courseId) {
         Course course = getCourseById(courseId);
         return convertToDetailResponse(course);
     }
 
-    public void deleteCourse(Integer courseId) {
+    public void deleteCourse(String courseId) {
         User user = getCurrentUser();
 
         Course course = courseRepo.findById(courseId)
@@ -94,7 +123,7 @@ public class CourseService{
         courseRepo.delete(course);
     }
 
-    public CourseDetailResponse updateCourse(Integer courseId, CreateCourseRequest request) {
+    public CourseDetailResponse updateCourse(String courseId, CreateCourseRequest request) {
         User user = getCurrentUser();
 
         Course course = courseRepo.findById(courseId)
@@ -121,12 +150,11 @@ public class CourseService{
                 .collect(Collectors.toList());
     }
 
-
-
     private CourseDetailResponse convertToDetailResponse(Course course) {
         CourseDetailResponse response = new CourseDetailResponse();
         response.setCourseId(course.getCourseId());
         response.setCourseName(course.getCourseName());
+        response.setCourseCode(course.getCourseCode());
         response.setSyllabus(course.getSyllabus());
         response.setObjective(course.getObjective());
         response.setAssessmentMethod(course.getAssessmentMethod());
@@ -139,6 +167,7 @@ public class CourseService{
                 CourseChapterResponse chapterResp = new CourseChapterResponse();
                 chapterResp.setChapterId(chapter.getChapterId());
                 chapterResp.setTitle(chapter.getTitle());
+                chapterResp.setContent(chapter.getContent());
                 chapterResp.setOrderIndex(chapter.getOrderIndex());
 
                 List<CourseResourceResponse> resourceResponses = new ArrayList<>();
@@ -149,12 +178,12 @@ public class CourseService{
                         resResp.setFileName(resource.getFileName());
                         resResp.setFilePath(resource.getFilePath());
                         resResp.setResourceType(resource.getResourceType());
-                        resResp.setUploaderId(resource.getUploader() != null ? resource.getUploader().getUserId() : null);
+                        resResp.setUploaderId(resource.getUploader() != null ?
+                                resource.getUploader().getUserId() : null);
                         resourceResponses.add(resResp);
                     }
                 }
                 chapterResp.setResources(resourceResponses);
-
                 chapterResponses.add(chapterResp);
             }
         }

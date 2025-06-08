@@ -28,10 +28,8 @@ public class CourseChapter {
     @JoinColumn(name = "course_id")
     private Course course;
 
-    @ElementCollection
-    @CollectionTable(name = "course_chapter_resource_ids", joinColumns = @JoinColumn(name = "chapter_id"))
-    @Column(name = "resource_id")
-    private List<String> resourceIds;
+    @OneToMany(mappedBy = "chapter", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseResource> resources;
 
     private String assignmentId;
 }

@@ -7,7 +7,7 @@ import java.util.List;
 @Getter
 @Setter
 public class CourseChapterResponse {
-    private Long chapterId;
+    private String chapterId;
     private String title;
     private String content;
     private Integer orderIndex;
