@@ -85,7 +85,7 @@ const Navbar = () => {
           {[
             { label: 'Courses', path: `/courses/${id}` },
             // { label: 'Classes', path: `/classes` },
-            { label: 'Resources', path: `/resources` },
+            { label: 'Resources', path: `/resources/${id}` },
             { label: 'Assignment', path: `/assignment/${id}` },
             { label: 'History', path: `/history/${id}` },
           ].map((item) => (

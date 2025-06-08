@@ -53,7 +53,7 @@ const Sidebar = () => {
       },
       {
         text: 'Resources',
-        path: `/resources/upload/${user.studentId}`,
+        path: `/resources/${user.studentId}`,
         icon: '📁',
       },
       // { text: 'Analytics', path: `/analytics/${user.studentId}`, icon: '📊' },

@@ -86,7 +86,8 @@ function Assignment() {
 
   return (
     <div
-      className={`ml-[${drawerWidth}px] min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100`}
+      style={{ marginLeft: `${drawerWidth}px` }}
+      className={` min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100`}
     >
       {/* Header */}
       <div className="flex justify-center bg-white/80 backdrop-blur-sm border-b border-slate-200/60 sticky top-0 z-10">
@@ -98,7 +99,7 @@ function Assignment() {
           Back to Courses
         </button>
         <div className="mt-20 mx-auto px-6 py-4 ">
-          <h1 className="text-2xl font-bold text-slate-700">My Assignment</h1>
+          <h1 className="text-2xl font-bold text-slate-700">Assignment</h1>
         </div>
       </div>
       <div className="flex justify-end mr-10 mt-5"></div>

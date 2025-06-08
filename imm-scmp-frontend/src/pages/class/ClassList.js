@@ -174,30 +174,25 @@ const ClassList = () => {
   }
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <Navbar />
-      <Sidebar />
+    <div
+      style={{ paddingTop: '100px', marginLeft: `${drawerWidth}px` }}
+      className={`min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100`}
+    >
       <Box
         component="main"
-        sx={{
-          mt: '50px',
-          flexGrow: 1,
-          p: 3,
-          marginLeft: `${drawerWidth}px`,
-          transition: 'margin 0.3s ease',
-          bgcolor: 'background.default',
-          minHeight: '100vh',
-        }}
+        className={`min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100`}
       >
         <Box sx={{ maxWidth: 1200, mx: 'auto', mt: 4 }}>
-          <Button
-            variant="contained"
-            onClick={handleOpenAddDialog}
-            sx={{ mb: 3 }}
-          >
-            Add New Class
-          </Button>
           <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+          <div className="flex justify-end">
+            <Button
+              variant="contained"
+              onClick={handleOpenAddDialog}
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-2 px-6 rounded-xl transition-all duration-200 items-center gap-2 shadow-md hover:shadow-lg"
+            >
+              Add New Class
+            </Button>
+          </div>
           <Box
             sx={{
               display: 'grid',
@@ -330,7 +325,7 @@ const ClassList = () => {
           </DialogActions>
         </Dialog>
       </Box>
-    </Box>
+    </div>
   );
 };
 

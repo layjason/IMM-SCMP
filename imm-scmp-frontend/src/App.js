@@ -40,7 +40,14 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/courses/create/:id" element={<CourseForm />} />
           <Route path="/courses/:id" element={<CourseList />} />
-          <Route path="/classes/:id" element={<ClassList />} />
+          <Route
+            path="/classes/:id"
+            element={
+              <AppLayout>
+                <ClassList />
+              </AppLayout>
+            }
+          />
           <Route path="/profile" element={<Profile />} />
           <Route path="/form" element={<CourseForm />} />
           <Route

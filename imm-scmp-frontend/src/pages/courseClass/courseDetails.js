@@ -132,7 +132,8 @@ function CourseDetails() {
 
   return (
     <div
-      className={`ml-[${drawerWidth}px] min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100`}
+      style={{ marginLeft: `${drawerWidth}px` }}
+      className={`min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100`}
     >
       <div className="flex justify-center bg-white/80 backdrop-blur-sm border-b border-slate-200/60 sticky top-0 z-10">
         <button
