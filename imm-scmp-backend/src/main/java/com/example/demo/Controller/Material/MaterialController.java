@@ -24,11 +24,14 @@ public class MaterialController {
 
     @PostMapping("/upload")
     public ResponseEntity<Material> uploadMaterial(@RequestParam String title,
+                                                   @RequestParam String description,
                                                    @RequestParam MultipartFile file,
                                                    @RequestParam String chapter,
                                                    @RequestParam String courseId,
-                                                   @RequestParam String uploaderId) throws IOException {
-        Material material = materialService.uploadMaterial(title, file, chapter, courseId, uploaderId);
+                                                   @RequestParam String uploaderId,
+                                                   @RequestParam String label,
+                                                   @RequestParam boolean compressed) throws IOException {
+        Material material = materialService.uploadMaterial(title, description, file, chapter, courseId, uploaderId, label, compressed);
         return ResponseEntity.ok(material);
     }
 
@@ -49,3 +52,4 @@ public class MaterialController {
         return ResponseEntity.noContent().build();
     }
 }
+
