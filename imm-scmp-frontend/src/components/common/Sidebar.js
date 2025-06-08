@@ -49,7 +49,7 @@ const Sidebar = () => {
       {
         text: 'My Classes',
         path: `/classes/${user.studentId}`,
-        icon: '📋',
+        icon: '👩🏻‍🏫',
       },
       {
         text: 'Upload Resources',

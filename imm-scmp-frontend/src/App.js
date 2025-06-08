@@ -11,13 +11,11 @@ import Register from './pages/account/Register';
 import Profile from './pages/account/Profile';
 import CourseList from './pages/courseClass/CourseList';
 import CourseForm from './pages/courseClass/CourseForm';
-
+import CourseDetails from './pages/courseClass/courseDetails';
 import Assignment from './pages/assignment/Assignment';
 import CreateAssignment from './pages/assignment/CreateAssignment';
 import DoAssignment from './pages/assignment/DoAssignment';
 import ClassList from './pages/class/ClassList';
-import CourseDetails from './pages/courseClass/CourseDetails';
-import ClassForm from './pages/class/ClassForm';
 
 const AppLayout = ({ children }) => (
   <>
@@ -39,10 +37,9 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/courses/create/:id" element={<CourseForm />} />
           <Route path="/courses/:id" element={<CourseList />} />
+          <Route path="/classes/:id" element={<ClassList />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/classes" element={<ClassList />} />
-          <Route path="/classes/:instructorId" element={<ClassList />} />
-          <Route path="/classes/:instructorId/create" element={<ClassForm />} />
+          <Route path="/form" element={<CourseForm />} />
           <Route
             path="/courses/:id/:courseId/"
             element={

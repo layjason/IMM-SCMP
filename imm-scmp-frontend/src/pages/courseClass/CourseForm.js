@@ -89,7 +89,7 @@ function CourseForm() {
 
       const courseId = `course-${Date.now()}`;
       const courseCode = `CS${Math.floor(Math.random() * 1000)}`;
-      const creatorId = getId();
+      const creatorId = getId() || 'S12345';
       const createdTime = new Date().toISOString();
 
       const newCourse = {
@@ -128,7 +128,7 @@ function CourseForm() {
   };
 
   const handleBack = () => {
-    navigate(`/courses/${getId()}`);
+    navigate(`/courses/${getId() || 'S12345'}`);
   };
 
   return (

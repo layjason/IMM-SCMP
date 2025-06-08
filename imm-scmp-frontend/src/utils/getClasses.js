@@ -2,7 +2,7 @@
 const mockClasses = [
   {
     id: 1,
-    name: 'Advanced Mathematics A',
+    name: '232511',
     code: 'MATH-401-A',
     instructor: 'Dr. Sarah Johnson',
     subject: 'Mathematics',

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
-import Search from '../../components/classList/Search';
-import ClassCard from '../../components/classList/ClassCard';
+import Search from '../../components/courseList/Search';
+import ClassCard from './ClassCard';
 import Navbar from '../../components/common/Navbar';
 import Sidebar from '../../components/common/Sidebar';
 import { SidebarContext } from '../../utils/SidebarContext';
