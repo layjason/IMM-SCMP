@@ -4,6 +4,7 @@ import com.example.demo.Model.Clazz.ClassEntity;
 import com.example.demo.Model.Clazz.ClassTask;
 import com.example.demo.Service.Class.ClassService;
 import com.example.demo.Service.Class.TaskService;
+import com.example.demo.Model.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
