@@ -32,8 +32,8 @@ function Register() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email,
           userName: name,
+          email,
           password,
           confirmPassword,
           role,
@@ -50,11 +50,11 @@ function Register() {
       // 如果返回了 token，就存储
       if (data.token) {
         localStorage.setItem('token', data.token);
-        alert('注册成功，已自动登录');
-        navigate('/courses'); // 直接跳课程页
-      } else {
+        //        alert('注册成功，已自动登录');
+        //        navigate(`/courses/${data.userId}`); // 直接跳课程页
+        //      } else {
         alert('注册成功，请登录');
-        navigate('/login'); // 传统跳登录页
+        navigate(`/login`); // 传统跳登录页
       }
     } catch (err) {
       setError(err.message);

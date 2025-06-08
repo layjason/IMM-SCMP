@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ErrorOutline } from '@mui/icons-material';
-import getId from '../../utils/getId';
+// import getId from '../../utils/getId';
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -11,30 +11,26 @@ function Login() {
 
   const handleLogin = async () => {
     try {
-      // const response = await fetch('http://localhost:8080/api/users/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email, password }),
-      // });
+      const response = await fetch('http://localhost:8080/api/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-      // if (!response.ok) {
-      //   const errorData = await response.json();
-      //   throw new Error(errorData.message || '登录失败');
-      // }
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || '登录失败');
+      }
 
-      // const data = await response.json();
+      const data = await response.json();
 
-      // const { token, user } = data;
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('userId', data.userId);
+      localStorage.setItem('userRole', data.role);
 
-      // localStorage.setItem('token', token);
-      // need to be replaced later
-      const userid = 'T-001';
-      // localStorage.setItem('userId', user.id); // Optional: store userId if you need it globally
-      localStorage.setItem('token', 'T-001');
-      localStorage.setItem('userId', userid);
       alert('登录成功');
       // navigate(`/courses/${user.id}`);
-      navigate(`/courses/${getId()}`);
+      navigate(`/courses/${data.userId}`);
     } catch (err) {
       setError(err.message);
     }
