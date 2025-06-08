@@ -12,11 +12,12 @@ import {
 } from '@mui/icons-material';
 import TeacherControls from '../../components/courseDetails/TeacherControls';
 import StudentManagement from '../../components/courseDetails/StudentManagement';
-import MaterialList from '../../components/courseDetails/AssignmentList';
-import AssignmentList from '../../components/courseDetails/MaterialsList';
+import MaterialList from '../../components/courseDetails/MaterialList';
+import AssignmentList from '../../components/courseDetails/AssignmentList';
 import getId from '../../utils/getId';
 import { SidebarContext } from '../../utils/SidebarContext';
 import getRole from '../../utils/getRole';
+import CreateAssignment from '../assignment/CreateAssignment';
 
 function CourseDetails() {
   const { courseId } = useParams();
@@ -27,8 +28,8 @@ function CourseDetails() {
   const [assignments, setAssignments] = useState([]);
   const [userRole, setUserRole] = useState(''); // Mock: 'teacher' or 'student'
   const [file, setFile] = useState(null);
-  const [assignmentText, setAssignmentText] = useState('');
   const [showStudentManagement, setShowStudentManagement] = useState(false);
+  const [showCreateAssignment, setShowCreateAssignment] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const { isExpanded } = useContext(SidebarContext);
@@ -135,32 +136,6 @@ function CourseDetails() {
     }
   };
 
-  // Handle assignment posting (teacher only)
-  const handleAssignmentSubmit = async (e) => {
-    e.preventDefault();
-    if (!assignmentText) {
-      setError('Please enter an assignment question.');
-      return;
-    }
-    try {
-      // Mock assignment post
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setAssignments([
-        ...assignments,
-        {
-          id: assignments.length + 1,
-          date: selectedDate.toISOString().split('T')[0],
-          question: assignmentText,
-          answer: '',
-        },
-      ]);
-      setSuccess('Assignment posted successfully!');
-      setAssignmentText('');
-    } catch (err) {
-      setError('Failed to post assignment.');
-    }
-  };
-
   // Handle navigation to assignment page (student only)
   const handleGoToAssignment = (assignmentId) => {
     navigate(`/assignment/${assignmentId}`);
@@ -235,10 +210,19 @@ function CourseDetails() {
           {userRole === 'TEACHER' && (
             <TeacherControls
               setFile={setFile}
-              assignmentText={assignmentText}
-              setAssignmentText={setAssignmentText}
               handleFileUpload={handleFileUpload}
-              handleAssignmentSubmit={handleAssignmentSubmit}
+              setShowCreateAssignment={setShowCreateAssignment}
+            />
+          )}
+          {showCreateAssignment && userRole === 'TEACHER' && (
+            <CreateAssignment
+              isOpen={true}
+              date={selectedDate}
+              onClose={() => setShowCreateAssignment(false)}
+              onSave={(newAssignment) => {
+                setAssignments([...assignments, newAssignment]);
+                setShowCreateAssignment(false);
+              }}
             />
           )}
         </div>

@@ -85,7 +85,7 @@ const Navbar = () => {
           {[
             { label: 'Courses', path: '/courses' },
             { label: 'Resources', path: '/resources' },
-            { label: 'Exercises', path: '/exercises' },
+            { label: 'Assignment', path: '/assignment' },
             { label: 'Analytics', path: '/history' },
           ].map((item) => (
             <Button
