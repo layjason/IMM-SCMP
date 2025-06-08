@@ -87,7 +87,7 @@ const Navbar = () => {
             { label: 'Classes', path: `/classes` },
             // { label: 'Resources', path: '/resources' },
             { label: 'Assignment', path: '/assignment' },
-            { label: 'Analytics', path: '/history' },
+            { label: 'History', path: '/history' },
           ].map((item) => (
             <Button
               key={item.label}

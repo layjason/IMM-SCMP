@@ -9,13 +9,15 @@ import Home from './pages/account/Home';
 import Login from './pages/account/Login';
 import Register from './pages/account/Register';
 import Profile from './pages/account/Profile';
+import ClassList from './pages/class/ClassList';
 import CourseList from './pages/courseClass/CourseList';
 import CourseForm from './pages/courseClass/CourseForm';
 import CourseDetails from './pages/courseClass/courseDetails';
 import Assignment from './pages/assignment/Assignment';
 import CreateAssignment from './pages/assignment/CreateAssignment';
 import DoAssignment from './pages/assignment/DoAssignment';
-import ClassList from './pages/class/ClassList';
+import MarkAssignment from './pages/assignment/MarkAssignment';
+import Resource from './pages/resources/Resource';
 
 const AppLayout = ({ children }) => (
   <>
@@ -64,6 +66,18 @@ function App() {
           <Route
             path="/course/:courseId/assignment/:assignmentId"
             element={<DoAssignment />}
+          />
+          <Route
+            path="/course/:courseId/markAssignment/:assignmentId"
+            element={<MarkAssignment />}
+          />
+          <Route
+            path="/resources"
+            element={
+              <AppLayout>
+                <Resource />
+              </AppLayout>
+            }
           />
         </Routes>
       </BrowserRouter>

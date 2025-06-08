@@ -246,3 +246,66 @@ export const getFavorites = async (studentId) => {
     })
     .filter((f) => f.question); // Filter out invalid references
 };
+
+export const getStudentSubmissions = () => {
+  return [
+    {
+      studentId: 's1',
+      studentName: '李明',
+      answers: [
+        { questionId: 'q1', answer: 'A', score: 5, feedback: '' },
+        { questionId: 'q2', answer: 'Sample code', score: 0, feedback: '' },
+      ],
+    },
+    {
+      studentId: 's2',
+      studentName: '王芳',
+      answers: [
+        { questionId: 'q1', answer: 'B', score: 0, feedback: '' },
+        { questionId: 'q2', answer: 'Another code', score: 0, feedback: '' },
+      ],
+    },
+  ];
+};
+
+export const saveTeacherScore = async (
+  studentId,
+  assignmentId,
+  questionId,
+  score,
+  feedback
+) => {
+  console.log('Saved score:', {
+    studentId,
+    assignmentId,
+    questionId,
+    score,
+    feedback,
+  });
+  return true;
+};
+
+export async function submitTeacherScores(studentId, assignmentId, scores) {
+  // Validate inputs
+  if (!studentId || !assignmentId || !Array.isArray(scores)) {
+    throw new Error(
+      'Invalid input: studentId, assignmentId, or scores missing'
+    );
+  }
+
+  // Simulate saving scores to a mock database
+  const totalScore = scores.reduce((sum, s) => sum + (s.score || 0), 0);
+  const maxScore = scores.reduce((sum, s) => sum + (s.score ? s.score : 0), 0); // Adjust based on assignment questions
+  const feedback = scores.map((s) => ({
+    questionId: s.questionId,
+    score: s.score || 0,
+    feedback: s.feedback || '',
+  }));
+
+  // Simulate API response
+  return {
+    totalScore,
+    maxScore,
+    feedback,
+  };
+}
