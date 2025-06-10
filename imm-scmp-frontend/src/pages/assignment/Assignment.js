@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { ArrowBack, CheckCircle, ErrorOutline } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { Line } from 'rc-progress';
 import getRole from '../../utils/getRole';
 import getId from '../../utils/getId';
+import { SidebarContext } from '../../utils/SidebarContext';
 
 function Assignment() {
   const navigate = useNavigate();
+  const { isExpanded } = useContext(SidebarContext);
+  const drawerWidth = isExpanded ? 300 : 80;
   const [courses, setCourses] = useState([]);
   const [userRole, setUserRole] = useState(''); // Mock: 'teacher' or 'student'
   const [error, setError] = useState('');
@@ -82,7 +85,10 @@ function Assignment() {
   };
 
   return (
-    <div className="ml-[80px] min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div
+      style={{ marginLeft: `${drawerWidth}px` }}
+      className={` min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100`}
+    >
       {/* Header */}
       <div className="flex justify-center bg-white/80 backdrop-blur-sm border-b border-slate-200/60 sticky top-0 z-10">
         <button
@@ -93,7 +99,7 @@ function Assignment() {
           Back to Courses
         </button>
         <div className="mt-20 mx-auto px-6 py-4 ">
-          <h1 className="text-2xl font-bold text-slate-700">My Assignment</h1>
+          <h1 className="text-2xl font-bold text-slate-700">Assignment</h1>
         </div>
       </div>
       <div className="flex justify-end mr-10 mt-5"></div>
@@ -127,7 +133,7 @@ function Assignment() {
                           </p>
                           <div className="w-1/2 mt-2">
                             <Line
-                              percent={assignment.completed ? 100 : 50}
+                              percent={assignment.completed ? 100 : 70}
                               strokeWidth={2}
                               strokeColor={
                                 assignment.completed ? '#22c55e' : '#3b82f6'

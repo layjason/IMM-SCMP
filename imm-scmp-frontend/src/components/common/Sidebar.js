@@ -53,10 +53,10 @@ const Sidebar = () => {
       },
       {
         text: 'Resources',
-        path: `/resources/upload/${user.studentId}`,
+        path: `/resources/${user.studentId}`,
         icon: '📁',
       },
-      { text: 'Analytics', path: `/analytics/${user.studentId}`, icon: '📊' },
+      // { text: 'Analytics', path: `/analytics/${user.studentId}`, icon: '📊' },
     ],
     [user.studentId]
   );
@@ -65,8 +65,8 @@ const Sidebar = () => {
     () => [
       { text: 'My Courses', path: `/courses/${user.studentId}`, icon: '📚' },
       {
-        text: 'My Exercises',
-        path: `/exercises/${user.studentId}`,
+        text: 'My Assignment',
+        path: `/assignment/${user.studentId}`,
         icon: '📈',
       },
       { text: 'My History', path: `/history/${user.studentId}`, icon: '📜' },

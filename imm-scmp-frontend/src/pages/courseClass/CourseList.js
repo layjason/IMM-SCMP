@@ -22,6 +22,7 @@ const CourseList = () => {
       const filtered = data.filter(
         (course) => course.instructor === instructorName
       );
+      console.log(filtered);
       setCourses(filtered);
       setFilteredCourses(filtered);
     };
