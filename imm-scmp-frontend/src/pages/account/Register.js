@@ -27,37 +27,38 @@ function Register() {
     setError('');
     if (!validateForm()) return;
 
-    // try {
-    // const response = await fetch('http://localhost:8080/api/users/register', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({
-    //     email,
-    //     userName: name,
-    //     password,
-    //     confirmPassword,
-    //     role,
-    //   }),
-    // });
+     try {
+     const response = await fetch('http://localhost:8080/api/users/register', {
+       method: 'POST',
+       headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify({
+         email,
+         userName: name,
+         password,
+         confirmPassword,
+         role,
+       }),
+     });
 
-    // if (!response.ok) {
-    //   const errorData = await response.json();
-    //   throw new Error(errorData.message || '注册失败');
-    // }
+     if (!response.ok) {
+       const errorData = await response.json();
+       throw new Error(errorData.message || '注册失败');
+     }
 
-    // const data = await response.json();
+     const data = await response.json();
 
-    // // if (data.token) {
-    // localStorage.setItem('token', data.token);
+     // if (data.token) {
+     localStorage.setItem('token', data.token);
     alert('注册成功，已自动登录');
-    // navigate(`/courses/${id}`);
-    //   } else {
-    //     alert('注册成功，请登录');
-    //     navigate('/login');
-    //   }
-    // } catch (err) {
-    //   setError(err.message);
-    // }
+    navigate('/login');
+//     navigate(`/courses/${id}`);
+//       } else {
+//         alert('注册成功，请登录');
+//         navigate('/login');
+//       }
+//     } catch (err) {
+//       setError(err.message);
+//     }
   };
 
   return (

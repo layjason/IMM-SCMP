@@ -11,26 +11,22 @@ function Login() {
 
   const handleLogin = async () => {
     try {
-      // const response = await fetch('http://localhost:8080/api/users/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email, password }),
-      // });
+      const response = await fetch('http://localhost:8080/api/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-      // if (!response.ok) {
-      //   const errorData = await response.json();
-      //   throw new Error(errorData.message || '登录失败');
-      // }
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || '登录失败');
+      }
 
-      // const data = await response.json();
-      // const { token, user } = data;
+      const data = await response.json();
 
-      // localStorage.setItem('token', token);
-      // need to be replaced later
-      const userid = 'T-001';
-      // localStorage.setItem('userId', user.id); // Optional: store userId if you need it globally
-      localStorage.setItem('token', 'T-001');
-      localStorage.setItem('userId', userid);
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('userId', data.userId);
+      localStorage.setItem('Role', data.Role);
       alert('登录成功');
       navigate(`/courses/${getId()}`);
     } catch (err) {
