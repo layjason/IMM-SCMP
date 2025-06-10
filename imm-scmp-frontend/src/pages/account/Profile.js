@@ -27,7 +27,11 @@ function Profile() {
         // const data = await response.json();
         // setUser({ email: data.email, name: data.name, role: data.role });
         // console.log(getRole(getId));
-        setUser({ email: 'test', name: 'Jason', role: userRole });
+        setUser({
+          email: `${userId}@gmail.com`,
+          name: `${userId}`,
+          role: userRole,
+        });
       } catch (err) {
         setError(err.message);
       }

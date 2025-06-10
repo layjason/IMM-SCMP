@@ -32,7 +32,7 @@ let courses = [
               'Sample solution: def reverse_string(s):\n    return s[::-1]',
           },
         ],
-        allowMultipleSubmissions: false,
+        allowMultipleSubmissions: true,
         answer: '',
       },
     ],
