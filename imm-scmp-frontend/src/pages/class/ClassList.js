@@ -19,11 +19,15 @@ import Navbar from '../../components/common/Navbar';
 import Sidebar from '../../components/common/Sidebar';
 import { SidebarContext } from '../../utils/SidebarContext';
 import getClasses from '../../utils/getClasses';
+import getId from '../../utils/getId';
+import getRole from '../../utils/getRole';
 
 // Placeholder: Assume AuthContext provides the current teacher's ID
 // Replace this with your actual authentication context or mechanism
 const AuthContext = React.createContext({ currentTeacherId: null });
 const useAuth = () => useContext(AuthContext);
+const id = getId();
+const userRole = getRole(id);
 
 const ClassList = () => {
   const { isExpanded } = useContext(SidebarContext);
@@ -184,15 +188,17 @@ const ClassList = () => {
       >
         <Box sx={{ maxWidth: 1200, mx: 'auto', mt: 4 }}>
           <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-          <div className="flex justify-end">
-            <Button
-              variant="contained"
-              onClick={handleOpenAddDialog}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-2 px-6 rounded-xl transition-all duration-200 items-center gap-2 shadow-md hover:shadow-lg"
-            >
-              Add New Class
-            </Button>
-          </div>
+          {userRole == 'TEACHER' && (
+            <div className="flex justify-end">
+              <Button
+                variant="contained"
+                onClick={handleOpenAddDialog}
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-2 px-6 rounded-xl transition-all duration-200 items-center gap-2 shadow-md hover:shadow-lg"
+              >
+                Add New Class
+              </Button>
+            </div>
+          )}
           <Box
             sx={{
               display: 'grid',

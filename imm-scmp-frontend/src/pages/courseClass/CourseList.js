@@ -7,6 +7,7 @@ import Sidebar from '../../components/common/Sidebar';
 import { SidebarContext } from '../../utils/SidebarContext';
 import getCourses from '../../utils/getCourses';
 import getId from '../../utils/getId';
+import getClasses from '../../utils/getClasses';
 
 const CourseList = () => {
   const { isExpanded } = useContext(SidebarContext);
@@ -18,26 +19,44 @@ const CourseList = () => {
   useEffect(() => {
     const loadCourses = async () => {
       const data = await getCourses();
-      const instructorName = `Instructor ${getId()}`;
-      const filtered = data.filter(
-        (course) => course.instructor === instructorName
-      );
-      console.log(filtered);
-      setCourses(filtered);
-      setFilteredCourses(filtered);
+      const classes = await getClasses();
+      const userId = getId(); // e.g., 'T-001' or 'S-001'
+      const isStudent = userId.startsWith('S-'); // Adjust based on your ID format
+
+      let filteredCourses = [];
+
+      if (isStudent) {
+        // For students, get classes they're enrolled in and collect their courseIds
+        const studentClasses = classes.filter((classItem) =>
+          classItem.studentIds.includes(userId)
+        );
+        const courseIds = [
+          ...new Set(
+            studentClasses.flatMap((classItem) => classItem.courseIds)
+          ),
+        ]; // Unique course IDs
+        filteredCourses = data.filter((course) =>
+          courseIds.includes(course.id)
+        );
+      } else {
+        // For teachers, filter courses by instructor
+        const instructorName = `Instructor ${userId}`; // Match your format
+        filteredCourses = data.filter(
+          (course) => course.instructor === instructorName
+        );
+      }
+
+      setCourses(filteredCourses);
+      setFilteredCourses(filteredCourses);
     };
+
     loadCourses();
   }, []);
-
   useEffect(() => {
     const term = searchTerm.toLowerCase();
-    const yearTerm = parseInt(searchTerm, 10);
-    const filtered = courses.filter(
-      (course) =>
-        course.title.toLowerCase().includes(term) ||
-        course.code.toLowerCase().includes(term) ||
-        course.instructor.toLowerCase().includes(term) ||
-        (!isNaN(yearTerm) && course.year === yearTerm)
+
+    const filtered = courses.filter((course) =>
+      course.title.toLowerCase().includes(term)
     );
     setFilteredCourses(filtered);
   }, [searchTerm, courses]);

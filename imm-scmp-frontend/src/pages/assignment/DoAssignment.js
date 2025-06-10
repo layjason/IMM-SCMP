@@ -198,7 +198,7 @@ function DoAssignment() {
       <div className=" bg-white/80 backdrop-blur-sm border-b border-slate-200/60 sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center">
           <button
-            onClick={() => navigate(`/assignment`)}
+            onClick={() => navigate(`/assignment/${studentId}`)}
             className="justify-center flex items-center gap-2 text-slate-600 font-semibold py-2 px-4 hover:text-slate-900 transition-colors duration-200"
           >
             <ArrowBack className="w-5 h-5" />

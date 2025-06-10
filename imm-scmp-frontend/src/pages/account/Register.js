@@ -49,11 +49,11 @@ function Register() {
 
     // // if (data.token) {
     // localStorage.setItem('token', data.token);
-    alert('注册成功，已自动登录');
-    // navigate(`/courses/${id}`);
+    // alert('注册成功，已自动登录');
+    // // navigate(`/courses/${id}`);
     //   } else {
-    //     alert('注册成功，请登录');
-    //     navigate('/login');
+    alert('注册成功，请登录');
+    navigate('/login');
     //   }
     // } catch (err) {
     //   setError(err.message);
