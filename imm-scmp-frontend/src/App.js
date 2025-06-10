@@ -19,6 +19,7 @@ import DoAssignment from './pages/assignment/DoAssignment';
 import MarkAssignment from './pages/assignment/MarkAssignment';
 import Resource from './pages/resources/Resource';
 import HistoryRecords from './pages/history/HistoryRecords';
+import ClassForm from './pages/class/ClassForm';
 
 const AppLayout = ({ children }) => (
   <>
@@ -39,7 +40,14 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/courses/create/:id" element={<CourseForm />} />
-          <Route path="/courses/:id" element={<CourseList />} />
+          <Route
+            path="/courses/:id"
+            element={
+              <AppLayout>
+                <CourseList />
+              </AppLayout>
+            }
+          />
           <Route
             path="/classes/:id"
             element={
@@ -95,6 +103,8 @@ function App() {
               </AppLayout>
             }
           />
+
+          <Route path="/classform" element={<ClassForm />}></Route>
         </Routes>
       </BrowserRouter>
     </SidebarProvider>

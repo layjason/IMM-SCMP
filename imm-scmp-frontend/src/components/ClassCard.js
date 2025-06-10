@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Card,
   CardContent,
   Typography,
   Box,
@@ -19,29 +18,12 @@ import {
   InputLabel,
   TextField,
 } from '@mui/material';
-import {
-  Schedule,
-  Group,
-  School,
-  Add,
-  Edit,
-  MoreVert,
-} from '@mui/icons-material';
-import getCourses from '../../utils/getCourses';
+import { Group, School, Add, Edit } from '@mui/icons-material';
+import getCourses from '../utils/getCourses';
 
 const ClassCard = ({ classData, onUpdate }) => {
-  const {
-    classId,
-    className,
-    teacherId,
-    courseIds,
-    studentIds,
-    subject,
-    year,
-    semester,
-    description,
-    schedule,
-  } = classData;
+  const { classId, className, teacherId, courseIds, studentIds, year } =
+    classData;
 
   const [openAddCourseDialog, setOpenAddCourseDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
@@ -50,10 +32,6 @@ const ClassCard = ({ classData, onUpdate }) => {
   const [courseDetails, setCourseDetails] = useState([]);
   const [editForm, setEditForm] = useState({
     className: className,
-    description: description,
-    schedule: schedule,
-    subject: subject,
-    semester: semester,
     year: year,
   });
 
@@ -126,10 +104,6 @@ const ClassCard = ({ classData, onUpdate }) => {
   const handleEditClick = () => {
     setEditForm({
       className,
-      description,
-      schedule,
-      subject,
-      semester,
       year,
     });
     setOpenEditDialog(true);
@@ -165,92 +139,70 @@ const ClassCard = ({ classData, onUpdate }) => {
   };
 
   return (
-    <Card
-      sx={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        transition: 'transform 0.2s ease-in-out',
-        '&:hover': {
-          transform: 'translateY(-4px)',
-          boxShadow: 3,
-        },
-        border: '1px solid #e0e0e0',
-      }}
-    >
+    <div className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:-translate-y-1 h-[500px] flex flex-col">
       <CardContent sx={{ flexGrow: 1, p: 3 }}>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="flex-start"
-          mb={2}
-        >
-          <Box flex={1}>
-            <Typography
-              variant="h6"
-              component="h3"
-              fontWeight="bold"
-              gutterBottom
-            >
-              {className}
-            </Typography>
-          </Box>
-          <Box display="flex" gap={1}>
-            <Tooltip title="Add Course">
-              <IconButton
-                size="small"
-                onClick={handleAddCourseClick}
-                color="primary"
+        <div className="">
+          <div className="flex  space-between flex-start pb-2">
+            <Box flex={1}>
+              <Typography
+                variant="h6"
+                component="h3"
+                fontWeight="bold"
+                gutterBottom
               >
-                <Add />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Edit Class">
-              <IconButton size="small" onClick={handleEditClick}>
-                <Edit />
-              </IconButton>
-            </Tooltip>
-            <IconButton size="small">
-              <MoreVert />
-            </IconButton>
-          </Box>
-        </Box>
+                {className}
+              </Typography>
+            </Box>
+            <Box display="flex" gap={1}>
+              <Tooltip title="Add Course">
+                <IconButton
+                  size="small"
+                  onClick={handleAddCourseClick}
+                  color="white"
+                >
+                  <Add />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Edit Class">
+                <IconButton size="small" onClick={handleEditClick}>
+                  <Edit />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          </div>
+        </div>
 
-        <Box display="flex" alignItems="center" mb={2}>
-          <Avatar
-            sx={{
-              width: 32,
-              height: 32,
-              mr: 2,
-              bgcolor: 'primary.main',
-              fontSize: '0.875rem',
-            }}
-          >
-            {getInitials(teacherId)}
-          </Avatar>
-          <Box>
-            <Typography variant="body2" fontWeight="medium">
-              {teacherId}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              Instructor
-            </Typography>
+        <Box display="flex" justifyContent="space-between">
+          <Box display="flex" alignItems="center" mb={2}>
+            <Avatar
+              sx={{
+                width: 32,
+                height: 32,
+                mr: 2,
+                bgcolor: 'primary.main',
+                fontSize: '0.875rem',
+              }}
+            >
+              {getInitials(teacherId)}
+            </Avatar>
+            <Box>
+              <Typography variant="body2" fontWeight="medium">
+                {teacherId}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                Instructor
+              </Typography>
+            </Box>
           </Box>
-        </Box>
 
-        <Box display="flex" gap={1} mb={2}>
-          <Chip
-            label={subject}
-            size="small"
-            color="primary"
-            variant="outlined"
-          />
-          <Chip
-            label={`${semester} ${year}`}
-            size="small"
-            color="secondary"
-            variant="outlined"
-          />
+          <Box display="flex" gap={1} mb={2}>
+            <Chip
+              label={` ${year}`}
+              size="small"
+              color="secondary"
+              variant="outlined"
+            />
+          </Box>
         </Box>
 
         <Typography
@@ -263,18 +215,9 @@ const ClassCard = ({ classData, onUpdate }) => {
             WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
           }}
-        >
-          {description}
-        </Typography>
+        ></Typography>
 
         <Box display="flex" flexDirection="column" gap={1} mb={2}>
-          <Box display="flex" alignItems="center" gap={1}>
-            <Schedule sx={{ fontSize: 16, color: 'text.secondary' }} />
-            <Typography variant="body2" color="text.secondary">
-              {schedule}
-            </Typography>
-          </Box>
-
           <Box display="flex" alignItems="center" gap={1}>
             <Group sx={{ fontSize: 16, color: 'text.secondary' }} />
             <Typography variant="body2" color="text.secondary">
@@ -297,37 +240,39 @@ const ClassCard = ({ classData, onUpdate }) => {
           </Box>
         </Box>
 
-        {courseDetails.length > 0 && (
-          <Box mb={2}>
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              display="block"
-              mb={1}
-            >
-              Assigned Courses:
-            </Typography>
-            <Box display="flex" flexWrap="wrap" gap={0.5}>
-              {courseDetails.slice(0, 2).map((course) => (
-                <Chip
-                  key={course.id}
-                  label={`${course.code}: ${course.title}`}
-                  size="small"
-                  variant="outlined"
-                  sx={{ fontSize: '0.7rem', height: 20 }}
-                />
-              ))}
-              {courseDetails.length > 2 && (
-                <Chip
-                  label={`+${courseDetails.length - 2} more`}
-                  size="small"
-                  variant="outlined"
-                  sx={{ fontSize: '0.7rem', height: 20 }}
-                />
-              )}
+        <Box display="flex" gap={1}>
+          {courseDetails.length > 0 && (
+            <Box mb={2}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                display="block"
+                mb={1}
+              >
+                Assigned Courses:
+              </Typography>
+              <Box display="flex" flexWrap="wrap" gap={0.5}>
+                {courseDetails.map((course) => (
+                  <Chip
+                    key={course.id}
+                    label={`${course.id}: ${course.title}`}
+                    size="small"
+                    variant="outlined"
+                    sx={{ fontSize: '0.7rem', height: 20 }}
+                  />
+                ))}
+                {/* {courseDetails.length > 2 && (
+                  <Chip
+                    label={`+${courseDetails.length - 2} more`}
+                    size="small"
+                    variant="outlined"
+                    sx={{ fontSize: '0.7rem', height: 20 }}
+                  />
+                )} */}
+              </Box>
             </Box>
-          </Box>
-        )}
+          )}
+        </Box>
       </CardContent>
 
       <Box px={3} pb={2}>
@@ -460,7 +405,7 @@ const ClassCard = ({ classData, onUpdate }) => {
           </Button>
         </DialogActions>
       </Dialog>
-    </Card>
+    </div>
   );
 };
 
