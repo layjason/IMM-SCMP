@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import getId from '../../utils/getId';
+import getId from '../utils/getId';
 import { ImportContacts, Info } from '@mui/icons-material';
 
 const cid = getId();

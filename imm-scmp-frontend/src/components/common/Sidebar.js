@@ -52,10 +52,15 @@ const Sidebar = () => {
         icon: '👩🏻‍🏫',
       },
       {
-        text: 'Resources',
-        path: `/resources/${user.studentId}`,
-        icon: '📁',
+        text: 'Assignment',
+        path: `/assignment/${user.studentId}`,
+        icon: '📝',
       },
+      // {
+      //   text: 'Resources',
+      //   path: `/resources/${user.studentId}`,
+      //   icon: '📁',
+      // },
       // { text: 'Analytics', path: `/analytics/${user.studentId}`, icon: '📊' },
     ],
     [user.studentId]

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Card,
   CardContent,
   Typography,
   Box,
@@ -18,42 +17,27 @@ import {
   FormControl,
   InputLabel,
   TextField,
+  OutlinedInput,
+  Checkbox,
+  ListItemText,
 } from '@mui/material';
-import {
-  Schedule,
-  Group,
-  School,
-  Add,
-  Edit,
-  MoreVert,
-} from '@mui/icons-material';
-import getCourses from '../../utils/getCourses';
+import { Group, School, Add, Edit } from '@mui/icons-material';
+import getCourses from '../utils/getCourses';
 
 const ClassCard = ({ classData, onUpdate }) => {
-  const {
-    classId,
-    className,
-    teacherId,
-    courseIds,
-    studentIds,
-    subject,
-    year,
-    semester,
-    description,
-    schedule,
-  } = classData;
+  const { classId, className, teacherId, courseIds, studentIds, year } =
+    classData;
 
   const [openAddCourseDialog, setOpenAddCourseDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [availableCourses, setAvailableCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState('');
   const [courseDetails, setCourseDetails] = useState([]);
+  const [allCourses, setAllCourses] = useState([]);
+  const [editCourses, setEditCourses] = useState(courseIds);
+  const [editStudents, setEditStudents] = useState(studentIds.join(','));
   const [editForm, setEditForm] = useState({
     className: className,
-    description: description,
-    schedule: schedule,
-    subject: subject,
-    semester: semester,
     year: year,
   });
 
@@ -123,15 +107,21 @@ const ClassCard = ({ classData, onUpdate }) => {
     }
   };
 
+  useEffect(() => {
+    const fetchAllCourses = async () => {
+      const courses = await getCourses();
+      setAllCourses(courses);
+    };
+    fetchAllCourses();
+  }, []);
+
   const handleEditClick = () => {
     setEditForm({
       className,
-      description,
-      schedule,
-      subject,
-      semester,
       year,
     });
+    setEditCourses(courseIds);
+    setEditStudents(studentIds.join(','));
     setOpenEditDialog(true);
   };
 
@@ -148,11 +138,12 @@ const ClassCard = ({ classData, onUpdate }) => {
     const updatedClass = {
       ...classData,
       className: editForm.className,
-      description: editForm.description,
-      schedule: editForm.schedule,
-      subject: editForm.subject,
-      semester: editForm.semester,
       year: parseInt(editForm.year, 10),
+      courseIds: editCourses,
+      studentIds: editStudents
+        .split(',')
+        .map((id) => id.trim())
+        .filter((id) => id !== ''),
     };
     // Update localStorage
     const storedClasses = JSON.parse(localStorage.getItem('classes') || '[]');
@@ -165,27 +156,10 @@ const ClassCard = ({ classData, onUpdate }) => {
   };
 
   return (
-    <Card
-      sx={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        transition: 'transform 0.2s ease-in-out',
-        '&:hover': {
-          transform: 'translateY(-4px)',
-          boxShadow: 3,
-        },
-        border: '1px solid #e0e0e0',
-      }}
-    >
-      <CardContent sx={{ flexGrow: 1, p: 3 }}>
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="flex-start"
-          mb={2}
-        >
-          <Box flex={1}>
+    <div className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:-translate-y-1 h-[500px] flex flex-col">
+      <div className="px-6 py-4 bg-gradient-to-br from-blue-200 via-blue-200 to-blue-300">
+        <div className="flex justify-between items-center">
+          <div className="flex-1">
             <Typography
               variant="h6"
               component="h3"
@@ -194,13 +168,13 @@ const ClassCard = ({ classData, onUpdate }) => {
             >
               {className}
             </Typography>
-          </Box>
-          <Box display="flex" gap={1}>
+          </div>
+          <div className="flex g-1">
             <Tooltip title="Add Course">
               <IconButton
                 size="small"
                 onClick={handleAddCourseClick}
-                color="primary"
+                color="white"
               >
                 <Add />
               </IconButton>
@@ -210,47 +184,41 @@ const ClassCard = ({ classData, onUpdate }) => {
                 <Edit />
               </IconButton>
             </Tooltip>
-            <IconButton size="small">
-              <MoreVert />
-            </IconButton>
+          </div>
+        </div>
+      </div>
+      <CardContent sx={{ flexGrow: 1, p: 3 }}>
+        <Box display="flex" justifyContent="space-between">
+          <Box display="flex" alignItems="center" mb={2}>
+            <Avatar
+              sx={{
+                width: 32,
+                height: 32,
+                mr: 2,
+                bgcolor: 'primary.main',
+                fontSize: '0.875rem',
+              }}
+            >
+              {getInitials(teacherId)}
+            </Avatar>
+            <Box>
+              <Typography variant="body2" fontWeight="medium">
+                {teacherId}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                Instructor
+              </Typography>
+            </Box>
           </Box>
-        </Box>
 
-        <Box display="flex" alignItems="center" mb={2}>
-          <Avatar
-            sx={{
-              width: 32,
-              height: 32,
-              mr: 2,
-              bgcolor: 'primary.main',
-              fontSize: '0.875rem',
-            }}
-          >
-            {getInitials(teacherId)}
-          </Avatar>
-          <Box>
-            <Typography variant="body2" fontWeight="medium">
-              {teacherId}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              Instructor
-            </Typography>
+          <Box display="flex" gap={1} mb={2}>
+            <Chip
+              label={` ${year}`}
+              size="small"
+              color="secondary"
+              variant="outlined"
+            />
           </Box>
-        </Box>
-
-        <Box display="flex" gap={1} mb={2}>
-          <Chip
-            label={subject}
-            size="small"
-            color="primary"
-            variant="outlined"
-          />
-          <Chip
-            label={`${semester} ${year}`}
-            size="small"
-            color="secondary"
-            variant="outlined"
-          />
         </Box>
 
         <Typography
@@ -263,18 +231,9 @@ const ClassCard = ({ classData, onUpdate }) => {
             WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
           }}
-        >
-          {description}
-        </Typography>
+        ></Typography>
 
         <Box display="flex" flexDirection="column" gap={1} mb={2}>
-          <Box display="flex" alignItems="center" gap={1}>
-            <Schedule sx={{ fontSize: 16, color: 'text.secondary' }} />
-            <Typography variant="body2" color="text.secondary">
-              {schedule}
-            </Typography>
-          </Box>
-
           <Box display="flex" alignItems="center" gap={1}>
             <Group sx={{ fontSize: 16, color: 'text.secondary' }} />
             <Typography variant="body2" color="text.secondary">
@@ -297,49 +256,52 @@ const ClassCard = ({ classData, onUpdate }) => {
           </Box>
         </Box>
 
-        {courseDetails.length > 0 && (
-          <Box mb={2}>
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              display="block"
-              mb={1}
-            >
-              Assigned Courses:
-            </Typography>
-            <Box display="flex" flexWrap="wrap" gap={0.5}>
-              {courseDetails.slice(0, 2).map((course) => (
-                <Chip
-                  key={course.id}
-                  label={`${course.code}: ${course.title}`}
-                  size="small"
-                  variant="outlined"
-                  sx={{ fontSize: '0.7rem', height: 20 }}
-                />
-              ))}
-              {courseDetails.length > 2 && (
-                <Chip
-                  label={`+${courseDetails.length - 2} more`}
-                  size="small"
-                  variant="outlined"
-                  sx={{ fontSize: '0.7rem', height: 20 }}
-                />
-              )}
+        <Box display="flex" gap={1}>
+          {courseDetails.length > 0 && (
+            <Box mb={2}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                display="block"
+                mb={1}
+              >
+                Assigned Courses:
+              </Typography>
+              <Box display="flex" flexWrap="wrap" gap={0.5}>
+                {courseDetails.map((course) => (
+                  <Chip
+                    key={course.id}
+                    label={`${course.id}: ${course.title}`}
+                    size="small"
+                    variant="outlined"
+                    sx={{ fontSize: '0.7rem', height: 20 }}
+                  />
+                ))}
+                {/* {courseDetails.length > 2 && (
+                  <Chip
+                    label={`+${courseDetails.length - 2} more`}
+                    size="small"
+                    variant="outlined"
+                    sx={{ fontSize: '0.7rem', height: 20 }}
+                  />
+                )} */}
+              </Box>
             </Box>
-          </Box>
-        )}
+          )}
+        </Box>
       </CardContent>
 
-      <Box px={3} pb={2}>
-        <Button
-          fullWidth
-          variant="outlined"
-          onClick={() => console.log('View class details:', classId)}
-          sx={{ textTransform: 'none' }}
-        >
-          View Details
-        </Button>
-      </Box>
+      <div>
+        <Box px={3} pb={2}>
+          <Button
+            fullWidth
+            onClick={() => console.log('View class details:', classId)}
+            className="flex-1 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-2 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl"
+          >
+            <Typography color="white">View Details</Typography>
+          </Button>
+        </Box>
+      </div>
 
       {/* Add Course Dialog */}
       <Dialog
@@ -359,7 +321,7 @@ const ClassCard = ({ classData, onUpdate }) => {
             >
               {availableCourses.map((course) => (
                 <MenuItem key={course.id} value={course.id}>
-                  {course.title} ({course.code})
+                  {course.title} ({course.id})
                 </MenuItem>
               ))}
             </Select>
@@ -385,7 +347,7 @@ const ClassCard = ({ classData, onUpdate }) => {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>Edit Class: {className}</DialogTitle>
+        <DialogTitle>Edit: {className}</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
@@ -396,47 +358,6 @@ const ClassCard = ({ classData, onUpdate }) => {
             margin="normal"
             required
           />
-
-          <TextField
-            fullWidth
-            label="Description"
-            name="description"
-            value={editForm.description}
-            onChange={handleEditChange}
-            margin="normal"
-            multiline
-            rows={3}
-          />
-          <TextField
-            fullWidth
-            label="Schedule"
-            name="schedule"
-            value={editForm.schedule}
-            onChange={handleEditChange}
-            margin="normal"
-            helperText="e.g., Mon, Wed, Fri 10:00-11:00"
-          />
-          <TextField
-            fullWidth
-            label="Subject"
-            name="subject"
-            value={editForm.subject}
-            onChange={handleEditChange}
-            margin="normal"
-          />
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Semester</InputLabel>
-            <Select
-              name="semester"
-              value={editForm.semester}
-              onChange={handleEditChange}
-              label="Semester"
-            >
-              <MenuItem value="Fall">Fall</MenuItem>
-              <MenuItem value="Spring">Spring</MenuItem>
-              <MenuItem value="Summer">Summer</MenuItem>
-            </Select>
-          </FormControl>
           <TextField
             fullWidth
             label="Year"
@@ -446,6 +367,40 @@ const ClassCard = ({ classData, onUpdate }) => {
             onChange={handleEditChange}
             margin="normal"
             required
+          />
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel>Courses</InputLabel>
+            <Select
+              multiple
+              value={editCourses}
+              onChange={(e) => setEditCourses(e.target.value)}
+              input={<OutlinedInput label="Courses" />}
+              renderValue={(selected) =>
+                selected
+                  .map(
+                    (id) =>
+                      allCourses.find((course) => course.id === id)?.title || id
+                  )
+                  .join(', ')
+              }
+            >
+              {allCourses.map((course) => (
+                <MenuItem key={course.id} value={course.id}>
+                  <Checkbox checked={editCourses.indexOf(course.id) > -1} />
+                  <ListItemText primary={`${course.title} (${course.code})`} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <TextField
+            fullWidth
+            label="Student IDs (comma separated)"
+            value={editStudents}
+            onChange={(e) => setEditStudents(e.target.value)}
+            margin="normal"
+            multiline
+            rows={2}
+            placeholder="e.g., stu001, stu002, stu003"
           />
         </DialogContent>
         <DialogActions>
@@ -460,7 +415,7 @@ const ClassCard = ({ classData, onUpdate }) => {
           </Button>
         </DialogActions>
       </Dialog>
-    </Card>
+    </div>
   );
 };
 

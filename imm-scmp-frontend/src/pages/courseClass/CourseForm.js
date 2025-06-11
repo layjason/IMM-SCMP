@@ -89,20 +89,20 @@ function CourseForm() {
         throw new Error('No authentication token found');
       }
 
-      const response = await fetch('http://localhost:8080/api/courses', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      });
+      // const response = await fetch('http://localhost:8080/api/courses', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      //   body: JSON.stringify(formData),
+      // });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to create course');
-      }
-      const data = await response.json();
+      // if (!response.ok) {
+      //   const errorData = await response.json();
+      //   throw new Error(errorData.message || 'Failed to create course');
+      // }
+      // const data = await response.json();
 
       const courseId = `course-${Date.now()}`;
       const courseCode = `CS${Math.floor(Math.random() * 1000)}`;
