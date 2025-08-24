@@ -1,4 +1,4 @@
-package com.example.demo.Model.Class;
+package com.example.demo.Model.Clazz;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,10 +26,10 @@ public class ClassEntity {
     @Column(name = "class_code", unique = true)
     private String classCode;
 
-    @OneToMany(mappedBy = "class")
+    @OneToMany(mappedBy = "clazz")
     private List<Course> courses;
 
-    @OneToMany(mappedBy = "class")
+    @OneToMany(mappedBy = "clazz")
     private List<Student> students;
 
     @Column(name = "teacher_id", nullable = false)
