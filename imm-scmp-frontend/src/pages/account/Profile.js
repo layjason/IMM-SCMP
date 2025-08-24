@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, ErrorOutline, Close } from '@mui/icons-material';
-// import getId from '../../utils/getId';
-import getRole from '../../utils/getRole';
-import getId from '../../utils/getId';
+import { decodeJwtToken } from '../../services/JwtService';
+import { editUserProfile } from '../../services/UserService';
 
 function Profile() {
-  const [user, setUser] = useState({ email: '', name: '', role: '' });
+  const [user, setUser] = useState({
+    email: '',
+    username: '',
+    role: '',
+    userId: '',
+  });
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -15,25 +19,22 @@ function Profile() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userId = getId();
-    const userRole = getRole(userId);
     const fetchUser = async () => {
       try {
-        // const response = await fetch('http://localhost:8080/api/user', {
-        //   method: 'GET',
-        //   headers: { 'Content-Type': 'application/json', 'User-Id': userId },
-        // });
-        // if (!response.ok) throw new Error('无法获取用户信息');
-        // const data = await response.json();
-        // setUser({ email: data.email, name: data.name, role: data.role });
-        // console.log(getRole(getId));
+        const token = localStorage.getItem('token');
+
+        const decodedToken = decodeJwtToken(token);
+
+        console.log(decodedToken);
         setUser({
-          email: `${userId}@gmail.com`,
-          name: `${userId}`,
-          role: userRole,
+          email: decodedToken.sub,
+          username: decodedToken.username,
+          role: decodedToken.role,
+          userId: decodedToken.userId,
         });
       } catch (err) {
-        setError(err.message);
+        setError('无法获取用户信息');
+        navigate('/login');
       }
     };
 
@@ -43,28 +44,23 @@ function Profile() {
   const handleUpdateProfile = async () => {
     setError('');
     setSuccess('');
-    if (!user.name) {
+    if (!user.username) {
       setError('姓名不能为空');
       return;
     }
 
-    try {
-      const response = await fetch('http://localhost:8080/api/user', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'User-Id': localStorage.getItem('userId'),
-        },
-        body: JSON.stringify({ name: user.name }),
+    editUserProfile(user.userId, { userName: user.username, email: user.email })
+      .then((response) => {
+        setSuccess('资料更新成功');
+        localStorage.setItem('username', user.username);
+        localStorage.setItem('email', user.email);
+
+        console.log(response.data);
+      })
+      .catch((err) => {
+        const errorMessage = err.response?.data.message || '资料更新失败';
+        setError(errorMessage);
       });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || '更新失败');
-      }
-      setSuccess('资料更新成功');
-    } catch (err) {
-      setError(err.message);
-    }
   };
 
   const handleUpdatePassword = async () => {
@@ -102,8 +98,23 @@ function Profile() {
   };
 
   const handleLogout = () => {
-    localStorage.clear();
-    navigate('/login');
+    try {
+      // Clear all localStorage items
+      localStorage.clear();
+
+      // Reset user state
+      setUser({ email: '', username: '', role: '' });
+      setError('');
+      setSuccess('');
+
+      // Navigate after state cleanup
+      setTimeout(() => {
+        navigate('/login', { replace: true });
+      }, 0);
+    } catch (err) {
+      console.error('Logout error:', err);
+      window.location.href = '/login';
+    }
   };
 
   const handleClose = () => {
@@ -148,8 +159,8 @@ function Profile() {
             </label>
             <input
               type="text"
-              value={user.name}
-              onChange={(e) => setUser({ ...user, name: e.target.value })}
+              value={user.username}
+              onChange={(e) => setUser({ ...user, username: e.target.value })}
               className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-slate-50/50 hover:bg-white"
               placeholder="请输入姓名"
             />

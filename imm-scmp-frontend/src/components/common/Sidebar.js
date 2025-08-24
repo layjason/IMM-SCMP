@@ -3,13 +3,12 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import IconButton from '@mui/material/IconButton';
-import getId from '../../utils/getId';
-import getRole from '../../utils/getRole';
 import { SidebarContext } from '../../utils/SidebarContext';
+import { decodeJwtToken } from '../../services/JwtService';
 
 const Sidebar = () => {
   const [activeMenu, setActiveMenu] = useState('');
-  const [user, setUser] = useState({ role: '', studentId: '' });
+  const [user, setUser] = useState({ role: '', userId: '' });
   const [stats, setStats] = useState({
     activeCourses: 0,
     totalStudents: 0,
@@ -27,9 +26,13 @@ const Sidebar = () => {
       return;
     }
     try {
-      const mockUser = { role: `${getRole(getId())}`, studentId: `${getId()}` };
-      // console.log('Mock user from sidebar:', getId(), getRole()); // Debug
-      setUser(mockUser);
+      const decodedToken = decodeJwtToken(token);
+
+      setUser({
+        role: decodedToken.role,
+        userId: decodedToken.userId,
+      });
+
       const mockStats = {
         activeCourses: 4,
         totalStudents: 8,
@@ -42,41 +45,41 @@ const Sidebar = () => {
     }
   }, [navigate]);
 
-  // Define menu items with useMemo to depend on user.studentId
+  // Define menu items with useMemo to depend on user.userId
   const teacherMenu = useMemo(
     () => [
-      { text: 'My Courses', path: `/courses/${user.studentId}`, icon: '📚' },
+      { text: 'My Courses', path: `/courses/${user.userId}`, icon: '📚' },
       {
         text: 'My Classes',
-        path: `/classes/${user.studentId}`,
+        path: `/classes/${user.userId}`,
         icon: '👩🏻‍🏫',
       },
       {
         text: 'Assignment',
-        path: `/assignment/${user.studentId}`,
+        path: `/assignment/${user.userId}`,
         icon: '📝',
       },
       // {
       //   text: 'Resources',
-      //   path: `/resources/${user.studentId}`,
+      //   path: `/resources/${user.userId}`,
       //   icon: '📁',
       // },
-      // { text: 'Analytics', path: `/analytics/${user.studentId}`, icon: '📊' },
+      // { text: 'Analytics', path: `/analytics/${user.userId}`, icon: '📊' },
     ],
-    [user.studentId]
+    [user.userId]
   );
 
   const studentMenu = useMemo(
     () => [
-      { text: 'My Courses', path: `/courses/${user.studentId}`, icon: '📚' },
+      { text: 'My Courses', path: `/courses/${user.userId}`, icon: '📚' },
       {
         text: 'My Assignment',
-        path: `/assignment/${user.studentId}`,
+        path: `/assignment/${user.userId}`,
         icon: '📈',
       },
-      { text: 'My History', path: `/history/${user.studentId}`, icon: '📜' },
+      { text: 'My History', path: `/history/${user.userId}`, icon: '📜' },
     ],
-    [user.studentId]
+    [user.userId]
   );
 
   // Ensure menuItems is always an array
@@ -97,7 +100,7 @@ const Sidebar = () => {
   }, [menuItems, location.pathname]);
 
   // Conditional render until user is loaded
-  if (!user.studentId) {
+  if (!user.userId) {
     return null; // Or a loading spinner
   }
 

@@ -63,6 +63,14 @@ public class UserController {
         }
     }
 
+    @PutMapping("/{userId}/edit-profile")
+    public ResponseEntity<?> editProfile(
+            @PathVariable String userId,
+            @RequestBody UpdateUserRequest profileData) {
+        userService.updateUserInfo(userId, profileData);
+        return ResponseEntity.ok("Profile Changed Successfully");
+    }
+
     @PutMapping("/{userId}/change-password")
     public ResponseEntity<?> changePassword(
             @PathVariable String userId,

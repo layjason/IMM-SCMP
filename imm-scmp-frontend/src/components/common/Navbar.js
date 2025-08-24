@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import getRole from '../../utils/getRole';
 import getId from '../../utils/getId';
 import {
   AppBar,
@@ -20,13 +19,36 @@ import {
   LogoutOutlined,
   SettingsOutlined,
 } from '@mui/icons-material';
+import { decodeJwtToken } from '../../services/JwtService';
 
 const Navbar = () => {
   const navigate = useNavigate();
   //get 学工号
   const id = getId();
-  const role = getRole(id);
+
+  const [role, setRole] = useState('');
+
   const [anchorEl, setAnchorEl] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    try {
+      const decodedToken = decodeJwtToken(token);
+      if (decodedToken.userId !== id) {
+        navigate('/login');
+        return;
+      }
+      setRole(decodedToken.role);
+    } catch (err) {
+      console.error('Error decoding token:', err);
+      navigate('/login');
+    }
+  }, [id, navigate]);
 
   const handleAvatarClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -37,10 +59,16 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Clear token
-    handleClose();
-    console.log('Logging out...');
-    navigate('/login');
+    try {
+      localStorage.removeItem('token');
+      handleClose();
+      // Navigate with replace to prevent back navigation
+      navigate('/login', { replace: true });
+    } catch (err) {
+      console.error('Logout error:', err);
+      // Fallback navigation
+      window.location.href = '/login';
+    }
   };
 
   const handleProfile = () => {
@@ -263,13 +291,25 @@ const Navbar = () => {
               mx: 1,
               my: 0.5,
               color: '#f44336',
+              transition: 'all 0.2s ease',
               '&:hover': {
                 backgroundColor: 'rgba(244, 67, 54, 0.1)',
+                transform: 'scale(1.02)',
+              },
+              '&:active': {
+                transform: 'scale(0.98)',
               },
             }}
           >
             <LogoutOutlined sx={{ mr: 2, color: '#f44336', fontSize: 24 }} />
-            <Typography variant="body1" fontWeight={500}>
+            <Typography
+              variant="body1"
+              fontWeight={500}
+              sx={{
+                transition: 'color 0.2s ease',
+                '&:hover': { color: '#d32f2f' },
+              }}
+            >
               Logout
             </Typography>
           </MenuItem>

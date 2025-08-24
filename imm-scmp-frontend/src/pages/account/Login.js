@@ -1,40 +1,40 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ErrorOutline } from '@mui/icons-material';
-import getId from '../../utils/getId';
+import { loginUser } from '../../services/UserService';
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [emailOrId, setEmailOrId] = useState(
+    localStorage.getItem('userId') || ''
+  );
+  const [password, setPassword] = useState(
+    localStorage.getItem('password') || ''
+  );
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    try {
-      // const response = await fetch('http://localhost:8080/api/users/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email, password }),
-      // });
+    const userData = { emailOrId, password };
 
-      // if (!response.ok) {
-      //   const errorData = await response.json();
-      //   throw new Error(errorData.message || '登录失败');
-      // }
-
-      // const data = await response.json();
-
-      const userid = 'T-001';
-      // localStorage.setItem('token', token);
-      // need to be replaced later
-      // localStorage.setItem('userId', user.id); // Optional: store userId if you need it globally
-      localStorage.setItem('token', 'S-001');
-      localStorage.setItem('userId', userid);
-      alert('登录成功');
-      navigate(`/courses/${getId()}`);
-    } catch (err) {
-      setError(err.message);
-    }
+    loginUser(userData)
+      .then((response) => {
+        if (response.data.token) {
+          localStorage.setItem('token', response.data.token);
+          localStorage.setItem('role', response.data.role);
+          localStorage.setItem('userId', response.data.userId);
+          localStorage.setItem('email', response.data.email);
+          localStorage.setItem('password', password);
+          setError(''); // Clear any existing errors
+          alert('登录成功');
+          navigate(`/courses/${response.data.userId}`);
+        } else {
+          setError('登录失败：服务器响应无效');
+        }
+      })
+      .catch((err) => {
+        const errorMessage = err.response?.data || '登录失败';
+        setError(errorMessage);
+      });
   };
 
   return (
@@ -82,9 +82,9 @@ function Login() {
                   学工号 / 邮箱
                 </label>
                 <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  type="emailOrId"
+                  value={emailOrId}
+                  onChange={(e) => setEmailOrId(e.target.value)}
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 ease-in-out hover:border-blue-400 placeholder-gray-400 text-gray-800"
                   placeholder="请输入学工号或邮箱"
                 />

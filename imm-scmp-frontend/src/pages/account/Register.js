@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ErrorOutline } from '@mui/icons-material';
+import { registerUser } from '../../services/UserService';
 
 function Register() {
   const [email, setEmail] = useState('');
@@ -14,51 +15,32 @@ function Register() {
   const validateForm = () => {
     if (!email || !password || !confirmPassword || !name || !role) {
       setError('请填写所有必填字段');
-      return false;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError('请输入有效的邮箱地址');
-      return false;
     }
-    return true;
   };
 
   const handleRegister = async () => {
-    setError('');
-    if (!validateForm()) return;
-
-    //  try {
-    //  const response = await fetch('http://localhost:8080/api/users/register', {
-    //    method: 'POST',
-    //    headers: { 'Content-Type': 'application/json' },
-    //    body: JSON.stringify({
-    //      email,
-    //      userName: name,
-    //      password,
-    //      confirmPassword,
-    //      role,
-    //    }),
-    //  });
-
-    //  if (!response.ok) {
-    //    const errorData = await response.json();
-    //    throw new Error(errorData.message || '注册失败');
-    //  }
-
-    //  const data = await response.json();
-
-    // // if (data.token) {
-    // localStorage.setItem('token', data.token);
-    alert('注册成功，已自动登录');
-    // navigate('/login');
-    //     navigate(`/courses/${id}`);
-    //       } else {
-    //         alert('注册成功，请登录');
-    //         navigate('/login');
-    //       }
-    //     } catch (err) {
-    //       setError(err.message);
-    //     }
+    validateForm();
+    const user = { email, password, confirmPassword, userName: name, role };
+    registerUser(user)
+      .then((response) => {
+        if (response.data.token) {
+          localStorage.setItem('token', response.data.token);
+          localStorage.setItem('role', response.data.role);
+          localStorage.setItem('userId', response.data.userId);
+          setError(''); // Clear any existing errors
+          alert('注册成功，欢迎加入软课程管理平台！');
+          navigate(`/courses/${response.data.userId}`);
+        } else {
+          setError('注册失败：服务器响应无效');
+        }
+      })
+      .catch((err) => {
+        const errorMessage = err.response?.data || '注册失败';
+        setError(errorMessage);
+      });
   };
 
   return (
@@ -179,7 +161,7 @@ function Register() {
               </button>
               <div className="text-center">
                 <button
-                  onClick={() => navigate('/login')}
+                  onClick={() => handleRegister()}
                   className="text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200"
                 >
                   已有账号？立即登录

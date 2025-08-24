@@ -33,7 +33,8 @@ public class UserService {
         if (userRepo.findByEmail(registerRequest.getEmail()).isPresent()) {
             throw new EmailAlreadyExistsException();
         }
-
+//
+//        System.out.println("test");
         User user = switch (registerRequest.getRole().toUpperCase()) {
             case "TEACHER" -> new Teacher();
             case "ASSISTANT" -> new Assistant();
@@ -53,7 +54,8 @@ public class UserService {
 
 
     public Optional<User> loginUser(LoginRequest loginRequest) {
-        Optional<User> userOpt = userRepo.findByEmail(loginRequest.getEmail());
+        String emailOrId = loginRequest.getEmailOrId();
+        Optional<User> userOpt = userRepo.findByEmail(emailOrId).or(() -> userRepo.findById(emailOrId));
 
         if (!isValidPassword(loginRequest.getPassword())) {
             throw new InvalidPasswordFormatException();
