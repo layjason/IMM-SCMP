@@ -1,3 +1,4 @@
+
 package com.example.demo.Model.User;
 
 import com.example.demo.Model.Course.Course;
