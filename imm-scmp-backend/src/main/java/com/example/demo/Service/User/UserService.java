@@ -6,6 +6,8 @@ import com.example.demo.DTO.*;
 import com.example.demo.Exception.User.UserException.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,6 +67,11 @@ public class UserService {
             return userOpt;
         }
         throw new InvalidCredentialsException();
+    }
+
+    public ResponseEntity<String> deleteUser(String userId){
+        userRepo.deleteById(userId);
+        return new ResponseEntity<>("注销" + userId + "已完成", HttpStatus.OK);
     }
 
     public User updateUserInfo(String userId, UpdateUserRequest updateData) {

@@ -2,7 +2,11 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, ErrorOutline, Close } from '@mui/icons-material';
 import { decodeJwtToken } from '../../services/JwtService';
-import { changePassword, editUserProfile } from '../../services/UserService';
+import {
+  changePassword,
+  deleteUser,
+  editUserProfile,
+} from '../../services/UserService';
 
 function Profile() {
   const [user, setUser] = useState({
@@ -77,7 +81,10 @@ function Profile() {
       setError('请填写所有密码字段');
       return;
     }
-
+    if (currentPassword !== localStorage.getItem('password')) {
+      setError('当前密码不正确');
+      return;
+    }
     if (currentPassword === newPassword) {
       setError('新密码不能与当前密码相同');
       return;
@@ -110,24 +117,26 @@ function Profile() {
       });
   };
 
-  const handleLogout = () => {
-    try {
-      // Clear all localStorage items
-      localStorage.clear();
+  const handleDeleteAccount = () => {
+    deleteUser(user.userId)
+      .then((response) => {
+        setSuccess(response.data);
+        // Clear all localStorage items
+        localStorage.clear();
 
-      // Reset user state
-      setUser({ email: '', username: '', role: '' });
-      setError('');
-      setSuccess('');
+        // Reset user state
+        setUser({ email: '', username: '', role: '' });
+        setError('');
 
-      // Navigate after state cleanup
-      setTimeout(() => {
-        navigate('/login', { replace: true });
-      }, 0);
-    } catch (err) {
-      console.error('Logout error:', err);
-      window.location.href = '/login';
-    }
+        // Navigate after state cleanup
+        setTimeout(() => {
+          navigate('/login', { replace: true });
+        }, 1000);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError('注销账号时出错，请稍后再试');
+      });
   };
 
   const handleClose = () => {
@@ -250,7 +259,7 @@ function Profile() {
         </div>
 
         <button
-          onClick={handleLogout}
+          onClick={handleDeleteAccount}
           className="w-full text-red-600 hover:text-red-800 font-medium py-2 mt-6 transition-colors duration-200"
         >
           注销账号

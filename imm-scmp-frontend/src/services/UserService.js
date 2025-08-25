@@ -14,3 +14,7 @@ export const editUserProfile = (userId, profileData) => {
 export const changePassword = (userId, passwordData) => {
   return axios.put(`${API_URL}/${userId}/change-password`, passwordData, {});
 };
+
+export const deleteUser = (userId) => {
+  return axios.delete(`${API_URL}/${userId}`, {});
+};

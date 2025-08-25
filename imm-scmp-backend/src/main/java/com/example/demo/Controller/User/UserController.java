@@ -104,6 +104,11 @@ public class UserController {
         return ResponseEntity.ok(role);
     }
 
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<String> deleteUser(@PathVariable String userId){
+        return userService.deleteUser(userId);
+    }
+
     @GetMapping("/ping")
     public String ping() {
         return "pong";
