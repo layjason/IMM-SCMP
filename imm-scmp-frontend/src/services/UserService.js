@@ -10,3 +10,7 @@ export const loginUser = (userData) => axios.post(`${API_URL}/login`, userData);
 export const editUserProfile = (userId, profileData) => {
   return axios.put(`${API_URL}/${userId}/edit-profile`, profileData, {});
 };
+
+export const changePassword = (userId, passwordData) => {
+  return axios.put(`${API_URL}/${userId}/change-password`, passwordData, {});
+};

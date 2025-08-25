@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, ErrorOutline, Close } from '@mui/icons-material';
 import { decodeJwtToken } from '../../services/JwtService';
-import { editUserProfile } from '../../services/UserService';
+import { changePassword, editUserProfile } from '../../services/UserService';
 
 function Profile() {
   const [user, setUser] = useState({
@@ -25,7 +25,6 @@ function Profile() {
 
         const decodedToken = decodeJwtToken(token);
 
-        console.log(decodedToken);
         setUser({
           email: decodedToken.sub,
           username: decodedToken.username,
@@ -44,18 +43,26 @@ function Profile() {
   const handleUpdateProfile = async () => {
     setError('');
     setSuccess('');
+    // console.log(user);
     if (!user.username) {
       setError('姓名不能为空');
+      return;
+    }
+    if (!user.email) {
+      setError('邮箱不能为空');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
+      setError('请输入有效的邮箱地址');
       return;
     }
 
     editUserProfile(user.userId, { userName: user.username, email: user.email })
       .then((response) => {
         setSuccess('资料更新成功');
-        localStorage.setItem('username', user.username);
-        localStorage.setItem('email', user.email);
-
-        console.log(response.data);
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('username', response.data.username);
+        localStorage.setItem('email', response.data.email);
       })
       .catch((err) => {
         const errorMessage = err.response?.data.message || '资料更新失败';
@@ -70,31 +77,37 @@ function Profile() {
       setError('请填写所有密码字段');
       return;
     }
+
+    if (currentPassword === newPassword) {
+      setError('新密码不能与当前密码相同');
+      return;
+    }
     if (newPassword !== confirmNewPassword) {
       setError('新密码与确认密码不匹配');
       return;
     }
-
-    try {
-      const response = await fetch('http://localhost:8080/api/user/password', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'User-Id': localStorage.getItem('userId'),
-        },
-        body: JSON.stringify({ currentPassword, newPassword }),
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || '密码更新失败');
-      }
-      setSuccess('密码更新成功');
-      setCurrentPassword('');
-      setNewPassword('');
-      setConfirmNewPassword('');
-    } catch (err) {
-      setError(err.message);
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\W).{8,}$/;
+    if (!passwordRegex.test(newPassword)) {
+      setError('请输入一个至少 8 个字符长并且包含至少一个特殊字符的密码');
+      return;
     }
+
+    changePassword(user.userId, {
+      oldPassword: currentPassword,
+      newPassword,
+    })
+      .then((response) => {
+        setSuccess('密码更新成功');
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('password', newPassword);
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmNewPassword('');
+      })
+      .catch((err) => {
+        const errorMessage = err.response?.data.message || '密码更新失败';
+        setError(errorMessage);
+      });
   };
 
   const handleLogout = () => {
@@ -149,8 +162,9 @@ function Profile() {
             <input
               type="email"
               value={user.email}
-              disabled
-              className="w-full px-4 py-3 border border-slate-200 rounded-xl bg-slate-100 cursor-not-allowed"
+              onChange={(e) => setUser({ ...user, email: e.target.value })}
+              className="w-full px-4 py-3 border border-slate-200 rounded-xl bg-slate-100"
+              placeholder="请输入姓名"
             />
           </div>
           <div>

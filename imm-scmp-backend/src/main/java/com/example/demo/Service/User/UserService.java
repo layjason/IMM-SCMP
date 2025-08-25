@@ -85,13 +85,13 @@ public class UserService {
         return userRepo.save(user);
     }
 
-    public void changePassword(String userId, ChangePasswordRequest request) {
+    public User changePassword(String userId, ChangePasswordRequest request) {
         User user = userRepo.findById(userId).orElseThrow(UserNotFoundException::new);
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
             throw new InvalidOldPasswordException();
         }
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-        userRepo.save(user);
+        return userRepo.save(user);
     }
 
     public String getUserRole(String userId) {

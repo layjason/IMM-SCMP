@@ -15,14 +15,29 @@ function Register() {
   const validateForm = () => {
     if (!email || !password || !confirmPassword || !name || !role) {
       setError('请填写所有必填字段');
+      return false;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
       setError('请输入有效的邮箱地址');
+      return false;
     }
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\W).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      setError('请输入一个至少 8 个字符长并且包含至少一个特殊字符的密码');
+      return false;
+    }
+    if (password !== confirmPassword) {
+      setError('两次输入的密码不匹配');
+      return false;
+    }
+    return true;
   };
 
   const handleRegister = async () => {
-    validateForm();
+    if (!validateForm()) {
+      return;
+    }
     const user = { email, password, confirmPassword, userName: name, role };
     registerUser(user)
       .then((response) => {
@@ -161,7 +176,7 @@ function Register() {
               </button>
               <div className="text-center">
                 <button
-                  onClick={() => handleRegister()}
+                  onClick={() => navigate('/login')}
                   className="text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200"
                 >
                   已有账号？立即登录

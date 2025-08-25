@@ -67,16 +67,35 @@ public class UserController {
     public ResponseEntity<?> editProfile(
             @PathVariable String userId,
             @RequestBody UpdateUserRequest profileData) {
-        userService.updateUserInfo(userId, profileData);
-        return ResponseEntity.ok("Profile Changed Successfully");
+        User user = userService.updateUserInfo(userId, profileData);
+
+        String token = jwtService.generateToken(user);
+
+        AuthResponse response = new AuthResponse(
+                user.getUserId(),
+                user.getEmail(),
+                user.getRole().name(),
+                token
+        );
+
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{userId}/change-password")
     public ResponseEntity<?> changePassword(
             @PathVariable String userId,
             @RequestBody ChangePasswordRequest request) {
-        userService.changePassword(userId, request);
-        return ResponseEntity.ok("Password Changed Successfully");
+        User user = userService.changePassword(userId, request);
+        String token = jwtService.generateToken(user);
+
+        AuthResponse response = new AuthResponse(
+                user.getUserId(),
+                user.getEmail(),
+                user.getRole().name(),
+                token
+        );
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{userId}/role")
