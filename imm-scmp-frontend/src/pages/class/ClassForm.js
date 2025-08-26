@@ -50,15 +50,15 @@ function ClassForm() {
     // Load available students (mock data or fetch from a source)
     const loadStudents = () => {
       getStudents()
-        .then((data) => {
-          setAvailableStudents(data);
+        .then((response) => {
+          // console.log('获取学生成功', response);
+          setAvailableStudents(response.data);
         })
         .catch((err) => {
           console.error('获取学生时出错', err);
           setAvailableStudents([]);
         });
     };
-    console.log(availableStudents);
     loadCourses();
     loadStudents();
   }, [teacherId]);
@@ -81,13 +81,21 @@ function ClassForm() {
   };
 
   const handleStudentToggle = (studentId) => {
+    console.log('Toggling student:', studentId);
+
     setFormData((prev) => {
       const isSelected = prev.selectedStudentIds.includes(studentId);
       const newSelectedStudentIds = isSelected
         ? prev.selectedStudentIds.filter((id) => id !== studentId)
         : [...prev.selectedStudentIds, studentId];
+
+      console.log('Previous selectedStudentIds:', prev.selectedStudentIds);
+      console.log('New selectedStudentIds:', newSelectedStudentIds);
+      console.log('Action:', isSelected ? 'REMOVING' : 'ADDING');
+
       return { ...prev, selectedStudentIds: newSelectedStudentIds };
     });
+
     if (error) setError('');
   };
 
@@ -137,6 +145,7 @@ function ClassForm() {
     }
 
     try {
+      // console.log('140' + formData.selectedStudentIds);
       const classData = {
         className: formData.className,
         classCode: formData.classCode,
@@ -144,6 +153,7 @@ function ClassForm() {
         courseIds: formData.selectedCourseIds,
         studentIds: formData.selectedStudentIds,
       };
+      console.log('Submitting class data:', classData.studentIds);
 
       addClass(classData)
         .then((response) => {
@@ -154,12 +164,11 @@ function ClassForm() {
             classCode: '',
             selectedCourseIds: [],
             selectedStudentIds: [],
-            year: new Date().getFullYear().toString(),
           });
         })
         .catch((error) => {
           console.error('创建班级时出错:', error);
-          throw new Error('创建班级失败，请重试');
+          setError('创建班级失败，请重试');
         });
 
       setTimeout(() => {
@@ -320,13 +329,13 @@ function ClassForm() {
               <div className="grid grid-cols-1 gap-3 max-h-60 overflow-y-auto">
                 {availableStudents.map((student) => (
                   <div
-                    key={student.studentId}
+                    key={student.userId}
                     className={`p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
-                      formData.selectedStudentIds.includes(student.studentId)
+                      formData.selectedStudentIds.includes(student.userId)
                         ? 'border-indigo-600 bg-indigo-50'
                         : 'border-slate-200 hover:border-indigo-600 hover:bg-indigo-25'
                     }`}
-                    onClick={() => handleStudentToggle(student.studentId)}
+                    onClick={() => handleStudentToggle(student.userId)}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
@@ -334,20 +343,18 @@ function ClassForm() {
                           {student.name}
                         </Typography>
                         <Typography className="text-sm text-slate-500">
-                          ID: {student.studentId}
+                          ID: {student.userId}
                         </Typography>
                       </div>
                       <div
                         className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                          formData.selectedStudentIds.includes(
-                            student.studentId
-                          )
+                          formData.selectedStudentIds.includes(student.userId)
                             ? 'border-indigo-600 bg-indigo-600'
                             : 'border-slate-300'
                         }`}
                       >
                         {formData.selectedStudentIds.includes(
-                          student.studentId
+                          student.userId
                         ) && <CheckCircle className="w-3 h-3 text-white" />}
                       </div>
                     </div>
@@ -421,7 +428,7 @@ function ClassForm() {
                 <CheckCircle className="w-5 h-5" />
               )}
               <Typography className="font-semibold text-base">
-                {error || 'Class created successfully!'}
+                {error || '创建新班级'}
               </Typography>
               <Button
                 onClick={() => {

@@ -24,11 +24,18 @@ public class ClassController {
         ClassEntity createdClass = classService.createClass(request);
         return ResponseEntity.status(201).body(ClassResponse.fromEntity(createdClass));
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<ClassResponse> getClass(@PathVariable String id) {
-        ClassEntity clazz = classService.getClassById(id);
-        return ResponseEntity.ok(ClassResponse.fromEntity(clazz));
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<ClassResponse>> getClassesByUserId(@PathVariable String userId) {
+        List<ClassEntity> classes = classService.getClassesByUserId(userId);
+
+        List<ClassResponse> responses = classes.stream()
+                .map(ClassResponse::fromEntity)
+                .toList();
+
+        return ResponseEntity.ok(responses);
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<ClassResponse> updateClass(@RequestBody UpdateClassRequest request) {

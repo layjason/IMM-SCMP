@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         return "OPTIONS".equalsIgnoreCase(request.getMethod()) ||
                 path.startsWith("/api/courses") ||
-                path.startsWith("/api/users") ;
+                path.startsWith("/api/users") || path.startsWith("/api/classes") || path.matches("/api/students(/.*)?");
     }
 
     @Override

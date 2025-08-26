@@ -47,6 +47,9 @@ public class ClassService {
         // Fetch and set students
         List<Student> students = studentRepository.findAllById(request.getStudentIds());
         clazz.setStudents(students);
+        for (Student student : students) {
+            student.setClazz(clazz);
+        }
         return classRepository.save(clazz);
     }
 

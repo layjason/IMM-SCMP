@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-export const getStudents = () => axios.get(`/api/classes`);
+const API_URL = 'http://localhost:8080/api';
 
-// className and teacherId
-export const addClass = (classData) => axios.post('/api/classes', classData);
+export const getStudents = () => axios.get(`${API_URL}/students/unassigned`);
+
+export const addClass = (classData) =>
+  axios.post(`${API_URL}/classes`, classData);
+
+export const getClass = (userId) => axios.get(`${API_URL}/${userId}`);
