@@ -25,8 +25,7 @@ import { Group, School, Add, Edit } from '@mui/icons-material';
 import getCourses from '../utils/getCourses';
 
 const ClassCard = ({ classData, onUpdate }) => {
-  const { classId, className, teacherId, courseIds, studentIds, year } =
-    classData;
+  const { classCode, className, teacherId, courseIds, studentIds } = classData;
 
   const [openAddCourseDialog, setOpenAddCourseDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
@@ -38,7 +37,6 @@ const ClassCard = ({ classData, onUpdate }) => {
   const [editStudents, setEditStudents] = useState(studentIds.join(','));
   const [editForm, setEditForm] = useState({
     className: className,
-    year: year,
   });
 
   const getInitials = (name) => {
@@ -93,7 +91,7 @@ const ClassCard = ({ classData, onUpdate }) => {
       // Update localStorage
       const storedClasses = JSON.parse(localStorage.getItem('classes') || '[]');
       const updatedClasses = storedClasses.map((c) =>
-        c.classId === classId ? updatedClass : c
+        c.classCode === classCode ? updatedClass : c
       );
       localStorage.setItem('classes', JSON.stringify(updatedClasses));
       onUpdate(updatedClass);
@@ -118,7 +116,6 @@ const ClassCard = ({ classData, onUpdate }) => {
   const handleEditClick = () => {
     setEditForm({
       className,
-      year,
     });
     setEditCourses(courseIds);
     setEditStudents(studentIds.join(','));
@@ -138,7 +135,6 @@ const ClassCard = ({ classData, onUpdate }) => {
     const updatedClass = {
       ...classData,
       className: editForm.className,
-      year: parseInt(editForm.year, 10),
       courseIds: editCourses,
       studentIds: editStudents
         .split(',')
@@ -148,7 +144,7 @@ const ClassCard = ({ classData, onUpdate }) => {
     // Update localStorage
     const storedClasses = JSON.parse(localStorage.getItem('classes') || '[]');
     const updatedClasses = storedClasses.map((c) =>
-      c.classId === classId ? updatedClass : c
+      c.classCode === classCode ? updatedClass : c
     );
     localStorage.setItem('classes', JSON.stringify(updatedClasses));
     onUpdate(updatedClass);
@@ -167,6 +163,9 @@ const ClassCard = ({ classData, onUpdate }) => {
               gutterBottom
             >
               {className}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Code: {classCode}
             </Typography>
           </div>
           <div className="flex g-1">
@@ -209,15 +208,6 @@ const ClassCard = ({ classData, onUpdate }) => {
                 Instructor
               </Typography>
             </Box>
-          </Box>
-
-          <Box display="flex" gap={1} mb={2}>
-            <Chip
-              label={` ${year}`}
-              size="small"
-              color="secondary"
-              variant="outlined"
-            />
           </Box>
         </Box>
 
@@ -295,7 +285,7 @@ const ClassCard = ({ classData, onUpdate }) => {
         <Box px={3} pb={2}>
           <Button
             fullWidth
-            onClick={() => console.log('View class details:', classId)}
+            onClick={() => console.log('View class details:', classCode)}
             className="flex-1 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-2 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl"
           >
             <Typography color="white">View Details</Typography>
@@ -351,19 +341,18 @@ const ClassCard = ({ classData, onUpdate }) => {
         <DialogContent>
           <TextField
             fullWidth
-            label="Class Name"
-            name="className"
-            value={editForm.className}
+            label="Class Code"
+            name="classCode"
+            value={editForm.classCode}
             onChange={handleEditChange}
             margin="normal"
             required
           />
           <TextField
             fullWidth
-            label="Year"
-            name="year"
-            type="number"
-            value={editForm.year}
+            label="Class Name"
+            name="className"
+            value={editForm.className}
             onChange={handleEditChange}
             margin="normal"
             required

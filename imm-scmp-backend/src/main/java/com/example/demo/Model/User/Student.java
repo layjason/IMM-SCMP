@@ -10,8 +10,6 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 public class Student extends User {
-    private Integer joinYear;
-
     @ManyToOne
     @JoinColumn(name = "class_id")
     private ClassEntity clazz;

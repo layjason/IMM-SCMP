@@ -5,6 +5,7 @@ import com.example.demo.Model.Clazz.ClassEntity;
 import com.example.demo.Model.User.Student;
 import com.example.demo.Service.Class.ClassService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,10 +21,9 @@ public class ClassController {
 
     @PostMapping
     public ResponseEntity<ClassResponse> createClass(@RequestBody CreateClassRequest request) {
-        ClassEntity created = classService.createClass(request);
-        return ResponseEntity.status(201).body(ClassResponse.fromEntity(created));
+        ClassEntity createdClass = classService.createClass(request);
+        return ResponseEntity.status(201).body(ClassResponse.fromEntity(createdClass));
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<ClassResponse> getClass(@PathVariable String id) {
         ClassEntity clazz = classService.getClassById(id);

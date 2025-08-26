@@ -2,12 +2,15 @@ package com.example.demo.Service.Class;
 
 import com.example.demo.DTO.*;
 import com.example.demo.Model.Clazz.ClassEntity;
+import com.example.demo.Model.Course.Course;
 import com.example.demo.Model.User.*;
 import com.example.demo.Repository.Class.ClassRepository;
+import com.example.demo.Repository.Course.CourseRepository;
+import com.example.demo.Repository.User.StudentRepository;
 import com.example.demo.Repository.User.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 import lombok.*;
 
 import java.util.*;
@@ -20,16 +23,30 @@ public class ClassService {
     private ClassRepository classRepository;
 
     @Autowired
+    private CourseRepository courseRepository;
+
+    @Autowired
+    private StudentRepository studentRepository;
+
+    @Autowired
     private UserRepository userRepository;
 
 
     public ClassEntity createClass(CreateClassRequest request) {
-        String classCode = generateCustomClassCode();
+
 
         ClassEntity clazz = new ClassEntity();
+        clazz.setClassCode(request.getClassCode());
         clazz.setClassName(request.getClassName());
         clazz.setTeacherId(request.getTeacherId());
-        clazz.setClassCode(classCode);
+
+        // Fetch and set courses
+        List<Course> courses = courseRepository.findAllById(request.getCourseIds());
+        clazz.setCourses(courses);
+
+        // Fetch and set students
+        List<Student> students = studentRepository.findAllById(request.getStudentIds());
+        clazz.setStudents(students);
         return classRepository.save(clazz);
     }
 
